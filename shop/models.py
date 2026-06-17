@@ -28,24 +28,24 @@ class Product(models.Model):
         ratings = self.ratings.all()
         if ratings:
             return sum(r.rating for r in ratings) / ratings.count()
-        return 0    
+        return 0
 
-    class Rating(models.Model):
-        product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ratings')
-        user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
-        rating = models.PositiveIntegerField(default=MinValueValidator(1), validators=[MaxValueValidator(5)])
-        comment = models.TextField(blank=True, null=True)
-        created = models.DateTimeField(auto_now_add=True)
+class Rating(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ratings')
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    rating = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    comment = models.TextField(blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True)
 
-        class Meta:
-            unique_together = ('product', 'user')
+    class Meta:
+        unique_together = ('product', 'user')
 
-        def __str__(self):
-              return self.user.username + ' - ' + str(self.rating)
+    def __str__(self):
+        return self.user.username + ' - ' + str(self.rating)
 
 class cart(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-   # products = models.ManyToManyField(Product, through='CartItem')
+    products = models.ManyToManyField(Product, through='CartItem')
     created_at= models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     def __str__(self):
