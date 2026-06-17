@@ -21,4 +21,12 @@ class RatingForm(forms.ModelForm):
             'rating': forms.NumberInput(attrs={'min': 1, 'max': 5}),
             'comment': forms.Textarea(attrs={'rows': 4}),
         }        
-        
+
+
+class CheckoutForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['first_name', 'last_name', 'email', 'address' ,'postal_code','city','note']   
+        widgets = {
+            'note': forms.Textarea(attrs={'rows': 3}),
+        }     
