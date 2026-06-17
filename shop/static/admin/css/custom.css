@@ -1,0 +1,15 @@
+/* background color change */
+#header {
+    background: #dc0707 !important;
+}
+
+/* sidebar color */
+.module caption {
+    background: #26303e !important;
+}
+
+/* table header color */
+thead th {
+    background: #dfe5f1 !important;
+    color: rgb(187, 110, 110);
+}
