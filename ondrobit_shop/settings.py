@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     
     'allauth',
     'allauth.account',
-
+    'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
 ]
-
+SITE_ID = 1
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
