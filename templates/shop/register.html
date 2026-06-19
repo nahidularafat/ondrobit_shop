@@ -5,75 +5,75 @@
 {% block extra_css %}
 <style>
     .card {
-    border-radius: var(--border-radius);
-    border: none;
-}
+        border-radius: var(--border-radius);
+        border: none;
+    }
 
-.card-header {
-    border-radius: var(--border-radius) var(--border-radius) 0 0;
-}
+    .card-header {
+        border-radius: var(--border-radius) var(--border-radius) 0 0;
+    }
 
-.card-body {
-    padding: 2rem;
-}
+    .card-body {
+        padding: 2rem;
+    }
 
-.form-label {
-    font-weight: 600;
-    color: var(--text-color);
-}
+    .form-label {
+        font-weight: 600;
+        color: var(--text-color);
+    }
 
-.form-control {
-    border-radius: var(--border-radius);
-    font-size: 1rem;
-}
+    .form-control {
+        border-radius: var(--border-radius);
+        font-size: 1rem;
+    }
 
-.is-invalid {
-    border-color: #dc3545 !important;
-}
+    .is-invalid {
+        border-color: #dc3545 !important;
+    }
 
-.invalid-feedback {
-    display: block;
-    color: #dc3545;
-}
+    .invalid-feedback {
+        display: block;
+        color: #dc3545;
+    }
 
-.btn-primary {
-    font-weight: 600;
-    padding: 0.75rem 1.5rem;
-    border-radius: var(--border-radius);
-    font-size: 1.1rem;
-}
+    .btn-primary {
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--border-radius);
+        font-size: 1.1rem;
+    }
 
-.btn-outline-danger {
-    font-weight: 600;
-    border-radius: var(--border-radius);
-    padding: 0.75rem 1.5rem;
-}
+    .btn-outline-danger {
+        font-weight: 600;
+        border-radius: var(--border-radius);
+        padding: 0.75rem 1.5rem;
+    }
 
-hr.my-4 {
-    border-color: #e9ecef;
-    margin: 2rem 0;
-}
+    hr.my-4 {
+        border-color: #e9ecef;
+        margin: 2rem 0;
+    }
 
-.text-center a {
-    font-weight: 600;
-}
+    .text-center a {
+        font-weight: 600;
+    }
 
-.text-center p {
-    color: var(--text-light);
-}
+    .text-center p {
+        color: var(--text-light);
+    }
 
-.text-light {
-    color: #6c757d;
-}
+    .text-light {
+        color: #6c757d;
+    }
 
-.text-primary {
-    color: var(--primary-color);
-}
+    .text-primary {
+        color: var(--primary-color);
+    }
 
-.invalid-feedback {
-    font-size: 0.9rem;
-    margin-top: 0.25rem;
-}
+    .invalid-feedback {
+        font-size: 0.9rem;
+        margin-top: 0.25rem;
+    }
 
 </style>
 {% endblock %}
@@ -150,9 +150,10 @@ hr.my-4 {
                 
                 <div class="text-center">
                     <p>Or sign up with:</p>
-                    {% comment %} <a href="{% provider_login_url 'google' %}" class="btn btn-outline-danger rounded-pill px-4 py-2">
+                    
+                    <a href="{% provider_login_url 'google' %}" class="btn btn-outline-danger rounded-pill px-4 py-2">
                         <i class="fab fa-google me-2"></i> Google
-                    </a> {% endcomment %}
+                    </a>
                 </div>
                 
                 <div class="text-center mt-4">
