@@ -143,3 +143,11 @@ ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 LOGIN_URL='/accounts/login/'
 LOGIN_REDIRECT_URL='/' 
 LOGOUT_REDIRECT_URL='/'
+
+
+
+# SSL Commerz setup
+SSLCOMMERZ_STORE_ID =  'ondro6a3686fb7c432'
+SSLCOMMERZ_STORE_PASSWORD = 'ondro6a3686fb7c432@ssl'
+SSLCOMMERZ_PAYMENT_URL = ' https://sandbox.sslcommerz.com/gwprocess/v4/api.php'
+SSLCOMMERZ_VALIDATION_URL = 'https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php'
