@@ -5,10 +5,11 @@ from django.contrib.auth.decorators import login_required
 
 # আপনার মডেলগুলো
 from .models import Product, category, cart, CartItem, Order, Rating
-
+from.django.views.decorators.csrf import csrf_exempt
 # ফর্মগুলো
 from .forms import RegistrationForm, RatingForm, CheckoutForm
 from django. db.models import Q,Min,Max,Avg
+from .utils import generate_sslcommerz_payment
 
 def login_view(request):
     if request.method == 'POST':
@@ -203,21 +204,28 @@ def checkout(request):
         return render(request, 'shop/checkout.html', {'form': form, 'cart': cart}) 
     
     
-@login_required    
+@csrf_exempt
+@login_required
 def payment_process(request):
+    # session 
     order_id = request.session.get('order_id')
     if not order_id:
-        messages.error(request, "No order found for payment.")
+        return redirect('home')
+    
+    order = get_object_or_404(Order, id=order_id)
+    payment_data = generate_sslcommerz_payment(request, order)
+    
+    if payment_data['status'] == 'SUCCESS':
+        return redirect(payment_data['GatewayPageURL'])
+    else:
+        messages.error(request, 'Payment gateway error. Please Try again.')
         return redirect('checkout')
+        
+# 1. Payment Success
+@csrf_exempt
+@login_required  
+
+def payment_success(request,order_id):
     
-    order = get_object_or_404(Order, id=order_id, user=request.user)
-    
-    # এখানে আপনার পেমেন্ট গেটওয়ে ইন্টিগ্রেশন কোড থাকবে
-    # পেমেন্ট সফল হলে:
-    order.status = 'Completed'
-    order.save()
-    
-    messages.success(request, "Payment successful! Your order has been completed.")
-    del request.session['order_id']
-    
-    return redirect('home')
+  
+    return redirect('home')                                                                 
