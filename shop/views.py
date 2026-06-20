@@ -203,5 +203,21 @@ def checkout(request):
         return render(request, 'shop/checkout.html', {'form': form, 'cart': cart}) 
     
     
+@login_required    
+def payment_process(request):
+    order_id = request.session.get('order_id')
+    if not order_id:
+        messages.error(request, "No order found for payment.")
+        return redirect('checkout')
     
-             
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    
+    # এখানে আপনার পেমেন্ট গেটওয়ে ইন্টিগ্রেশন কোড থাকবে
+    # পেমেন্ট সফল হলে:
+    order.status = 'Completed'
+    order.save()
+    
+    messages.success(request, "Payment successful! Your order has been completed.")
+    del request.session['order_id']
+    
+    return redirect('home')
