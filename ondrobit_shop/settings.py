@@ -151,3 +151,14 @@ SSLCOMMERZ_STORE_ID =  'ondro6a3686fb7c432'
 SSLCOMMERZ_STORE_PASSWORD = 'ondro6a3686fb7c432@ssl'
 SSLCOMMERZ_PAYMENT_URL = ' https://sandbox.sslcommerz.com/gwprocess/v4/api.php'
 SSLCOMMERZ_VALIDATION_URL = 'https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php'
+
+
+# email setup
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = 'nahidularaf@gmail.com'
+EMAIL_HOST_PASSWORD = 'rnufdnoxdqesehdl'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from .sslcommerz import generate_sslcommerz_payment, send_order_confirmation_email
 
 # আপনার মডেলগুলো
 from .models import Product, category, cart, CartItem, Order, Rating
@@ -10,6 +11,16 @@ from.django.views.decorators.csrf import csrf_exempt
 from .forms import RegistrationForm, RatingForm, CheckoutForm
 from django. db.models import Q,Min,Max,Avg
 from .utils import generate_sslcommerz_payment
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+from .forms import RegistrationForm, RatingForm, CheckoutForm
+from .models import Category, Product, Cart, CartItem, Rating, Order, OrderItem
+from django.db.models import Q, Min, Max, Avg
+from django.contrib.auth.decorators import login_required
+from .sslcommerz import generate_sslcommerz_payment, send_order_confirmation_email
+from django.views.decorators.csrf import csrf_exempt
+# Create your views here.
 
 def login_view(request):
     if request.method == 'POST':
@@ -221,11 +232,41 @@ def payment_process(request):
         messages.error(request, 'Payment gateway error. Please Try again.')
         return redirect('checkout')
         
+       
 # 1. Payment Success
 @csrf_exempt
-@login_required  
-
-def payment_success(request,order_id):
+@login_required
+def payment_success(request, order_id):
+    order = get_object_or_404(Order, id= order_id, user=request.user)
+    # order ta paid
+    # order er status --> processing
+    # product er stock komiye dibo
+    # transaction id
+    order.paid = True 
+    order.status = 'processing'
+    order.transaction_id = order.id 
+    order.save()
+    order_items = order.order_items.all()
+    for item in order_items:
+        product = item.product
+        product.stock -= item.quantity
+        
+        # 40 - 60 = -20
+        if product.stock < 0:
+            product.stock = 0
+        product.save()
     
-  
-    return redirect('home')                                                                 
+    # send confirmation email
+    send_order_confirmation_email(order)
+    
+    messages.success(request, 'Payment successful')
+    return render(request, 'shop/payment_success.html', {'order' : order})
+
+
+@csrf_exempt
+@login_required
+def payment_cancel(request, order_id):
+    order = get_object_or_404(Order, id= order_id, user=request.user)
+    order.status = 'canceled'
+    order.save()
+    return redirect('checkout')

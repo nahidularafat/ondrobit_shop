@@ -25,4 +25,15 @@ def generate_sslcommerz_payment(request,order):
         'product_category': 'General',
         'product_profile': 'general',
     }
+      
+    response = requests.post(settings.SSLCOMMERZ_PAYMENT_URL, data=post_data)
+    return json.loads(response.text)# json --> Python obj
+    
+def send_order_confirmation_email(order):
+    subject = f'Order Confirmation - Order #{order.id}'
+    message = render_to_string('shop/email/order_confirmation.html', {'order' : order}) # html code ke --> string e convert kore
+    to = order.email
+    send_email = EmailMultiAlternatives(subject, '', to=[to])
+    send_email.attach_alternative(message, 'text/html')
+    send_email.send()
     
