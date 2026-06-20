@@ -46,8 +46,7 @@ def logout_view(request):
     return redirect('login')
 
 def home(request):
-    featured_products = 
-    Product.objects.filter(available=True).order_by('-created_at')[:8]
+    featured_products = Product.objects.filter(available=True).order_by('-created_at')[:8] # descending order
     categories = category.objects.all()
     return render(request, 'shop/home.html', {'featured_products': featured_products, 'categories': categories})
 
@@ -89,7 +88,6 @@ def product_detail(request, category_slug, product_slug):
     })        
     
     
-# product detail page
 def product_detail(request, slug):
     product = get_object_or_404(Product, slug = slug, available = True)
     related_products = Product.objects.filter(category = product.category).exclude(id=product.id)
@@ -111,11 +109,9 @@ def product_detail(request, slug):
         'rating_form' : rating_form
     })
 
-@
 @login_required
 def cart_detail(request):
-    # user er kono cart nai
-    # user er cart ache
+   
     try:
         cart = Cart.objects.get(user=request.user)
     except Cart.DoesNotExist:
@@ -128,19 +124,14 @@ def cart_detail(request):
 def cart_add(request, product_id):
     product = get_object_or_404(Product, id=product_id)
 
-    # User er cart ache kina
-    
-    # Exception handling
-    # jodi thake taile oi cart ta check korbo
+   
     try: # ekahne error aste pare
         cart = Cart.objects.get(user=request.user)
     
-    # jodi na thake, taile cart ekta banabo
     except Cart.DoesNotExist:
         cart = Cart.objects.create(user=request.user)
     
-    # Cart e item add korbo
-    # item already cart e ache
+
     try:
         cart_item = CartItem.objects.get(cart=cart, product=product)
         cart_item.quantity += 1
@@ -154,24 +145,15 @@ def cart_add(request, product_id):
     return redirect('product_detail', slug=product.slug)
     
 
-# cart Update
-# cart item quantity increase/decrease korte parbo
-@login_required
 def cart_update(request, product_id):
-    # cart konta
-    # cart er item konta
-    # main product jeta cart item hisebe cart e ache
-    
+   
     cart = get_object_or_404(Cart, user=request.user)
     product = get_object_or_404(Product, id=product_id)
     cart_item = get_object_or_404(CartItem, cart=cart, product=product)
     
     quantity = int(request.POST.get('quantity', 1))
     
-    # Keya saban -> stock e ache 20 ta product
-    # user Keya saban -> 40 ta add to cart korche..
-    # user Keya saban -> 5, 4, 3, 2, 1, 0 --> cartitem delete kore deoya lagbe
-    
+  
     if quantity <= 0:
         cart_item.delete()
         messages.success(request, f"{product.name} has been removed from your cart!")
@@ -180,3 +162,46 @@ def cart_update(request, product_id):
         cart_item.save()
         messages.success(request, f"Cart updated successfully!!")
     return redirect('cart_detail') 
+
+@login_required
+def checkout(request):
+    try:
+        cart = Cart.objects.get(user=request.user)
+        if not cart.items.exists():
+            messages.warning(request, "Your cart is empty. Please add items to checkout.")
+            return redirect('cart_detail')
+    except Cart.DoesNotExist:
+        messages.warning(request, "Your cart is empty. Please add items to checkout.")
+        return redirect('cart_detail')
+    if request.method == 'POST':
+        form = CheckoutForm(request.POST)
+        if form.is_valid():
+            order = form.save(commit=False)
+            order=form.save(commit=False)
+            order.user=request.user
+            order.save()
+            
+            for item in cart.items.all():
+                 OrderItem.objects.create(
+                    product=item.product,
+                    quantity=item.quantity,
+                    price=item.product.price
+                )
+            cart.items.all().delete()
+            messages.success(request, "Your order has been placed successfully!")  
+            request.session['order_id'] = order.id
+            return redirect('') 
+        else:
+            initial_data = {}
+            if request.user.first_name:
+                initial_data['first_name'] = request.user.first_name
+            if request.user.last_name:
+                initial_data['last_name'] = request.user.last_name  
+                
+            form = CheckoutForm(initial=initial_data)
+           
+        return render(request, 'shop/checkout.html', {'form': form, 'cart': cart}) 
+    
+    
+    
+             
