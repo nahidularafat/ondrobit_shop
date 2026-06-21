@@ -1,13 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
-# Create your models here.
+
 class category(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=100,  unique=True)
     description = models.TextField(blank=True, null=True)
+    
     class Meta:
         verbose_name_plural = ' Categories'
+        
     def __str__(self):
         return self.name
 
@@ -17,13 +19,17 @@ class Product(models.Model):
     category = models.ForeignKey(category, on_delete=models.CASCADE,related_name='products' )
     description = models.TextField(blank=True, null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    stock =models.PositiveBigIntegerField(default=0)
+    stock = models.PositiveBigIntegerField(default=0)
+    
+    available = models.BooleanField(default=True)
+    
     created = models.DateTimeField(auto_now_add=True)   
     updated = models.DateTimeField(auto_now=True)   
     image = models.ImageField(upload_to='products/%Y/%m/%d', blank=True, null=True)
 
     def __str__(self):
         return self.name
+        
     def average_rating(self):
         ratings = self.ratings.all()
         if ratings:
@@ -47,8 +53,10 @@ class cart(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     created_at= models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
     def __str__(self):
         return self.user.username + ' Cart'
+        
     def get_total_price(self):
         total = sum(item.get_cost() for item in self.items.all())
         return total   
@@ -82,14 +90,12 @@ class Order(models.Model):
     address = models.CharField(max_length=255)
     city = models.CharField(max_length=100)
     postal_code = models.CharField(max_length=20)
-    city = models.CharField(max_length=100)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
     note = models.TextField(blank=True, null=True)
     paid = models.BooleanField(default=False)
     transaction_id = models.CharField(max_length=100, blank=True, null=True)    
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
- 
 
     def __str__(self):
         return f'Order {self.id} by {self.user.username}' 
@@ -99,7 +105,6 @@ class Order(models.Model):
 
     def get_total_cost(self):
         return sum(item.get_cost() for item in self.items.all())    
-
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
@@ -111,4 +116,4 @@ class OrderItem(models.Model):
         return f'{self.quantity} x {self.product.name}' 
 
     def get_cost(self):
-        return self.price * self.quantity        
+        return self.price * self.quantity
