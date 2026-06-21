@@ -1,31 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Confirmation - Order #{{ order.id }}</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             line-height: 1.6;
-            color: #333;
+            color: #333333;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px 0;
+        }
+        .email-container {
             max-width: 600px;
             margin: 0 auto;
-            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         }
         .header {
+            background-color: #6a11cb;
+            color: #ffffff;
             text-align: center;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #eee;
-            margin-bottom: 20px;
+            padding: 30px 20px;
         }
         .logo {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: bold;
-            color: #007bff;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+        .header p {
+            margin: 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 30px;
         }
         .order-info {
-            margin-bottom: 20px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #6a11cb;
+            padding: 15px 20px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+        }
+        .order-info p {
+            margin: 5px 0;
+            font-size: 15px;
+        }
+        h3 {
+            color: #6a11cb;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+            margin-top: 0;
         }
         .order-items {
             width: 100%;
@@ -33,105 +64,132 @@
             margin-bottom: 20px;
         }
         .order-items th, .order-items td {
-            padding: 10px;
+            padding: 12px 10px;
             text-align: left;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #eeeeee;
         }
         .order-items th {
-            background-color: #f5f5f5;
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #555555;
+            font-size: 14px;
+            text-transform: uppercase;
         }
         .order-total {
             text-align: right;
+            font-size: 18px;
             font-weight: bold;
+            color: #6a11cb;
+            padding: 15px 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            margin-bottom: 30px;
+        }
+        .shipping-info {
+            background-color: #ffffff;
+            border: 1px solid #eeeeee;
+            padding: 20px;
+            border-radius: 8px;
             margin-bottom: 20px;
+        }
+        .shipping-info p {
+            margin: 5px 0;
+            color: #555555;
         }
         .footer {
             text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-            margin-top: 20px;
-            font-size: 12px;
-            color: #777;
+            padding: 20px;
+            background-color: #f8f9fa;
+            font-size: 13px;
+            color: #888888;
         }
-        .shipping-info {
-            margin-top: 20px;
+        .footer p {
+            margin: 5px 0;
         }
-        h3 {
-            color: #007bff;
-        }
+        
         /* Mobile optimization */
         @media screen and (max-width: 600px) {
-            body {
-                padding: 15px;
+            .content {
+                padding: 20px;
             }
             .order-items th, .order-items td {
-                padding: 8px;
-            }
-            .logo {
-                font-size: 20px;
+                padding: 10px 5px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="logo">E-Shop</div>
-        <p>Thank you for your order!</p>
-    </div>
-    
-    <div class="order-info">
-        <h2>Order Confirmation</h2>
-        <p>Hi {{ order.first_name }},</p>
-        <p>Your order has been confirmed and is now being processed. Here's a summary of your order:</p>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">E-Shop</div>
+            <p>Thank you for your purchase!</p>
+        </div>
         
-        <p><strong>Order #:</strong> {{ order.id }}</p>
-        <p><strong>Order Date:</strong> {{ order.created_at|date:"F d, Y H:i" }}</p>
-        <p><strong>Payment Status:</strong> Paid</p>
-        <p><strong>Transaction ID:</strong> {{ order.transaction_id }}</p>
-    </div>
-    
-    <h3>Order Details</h3>
-    <table class="order-items">
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th>Quantity</th>
-                <th>Price</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in order.order_items.all %}
-            <tr>
-                <td>{{ item.product.name }}</td>
-                <td>{{ item.quantity }}</td>
-                <td>৳{{ item.price }}</td>
-                <td>৳{{ item.get_cost }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    
-    <div class="order-total">
-        <p>Total: ৳{{ order.get_total_cost }}</p>
-    </div>
-    
-    <div class="shipping-info">
-        <h3>Shipping Information</h3>
-        <p>
-            {{ order.first_name }} {{ order.last_name }}<br>
-            {{ order.address }}<br>
-            {{ order.city }}, {{ order.postal_code }}
-        </p>
-    </div>
-    
-    <p>We'll notify you when your order has been shipped. If you have any questions, please contact our customer service.</p>
-    
-    <p>Thank you for shopping with us!</p>
-    
-    <div class="footer">
-        <p>© 2025 E-Shop. All rights reserved.</p>
-        <p>This email was sent to {{ order.email }}</p>
+        <div class="content">
+            <p style="font-size: 16px;">Hi <strong>{{ order.first_name }}</strong>,</p>
+            <p style="color: #555;">We've received your order and payment. We are now processing it and will let you know once it's on the way. Here is your order summary:</p>
+            
+            <!-- Order Meta Info -->
+            <div class="order-info">
+                <p><strong>Order Number:</strong> #{{ order.id }}</p>
+                <p><strong>Order Date:</strong> {{ order.created|date:"F d, Y H:i" }}</p>
+                <p><strong>Payment Status:</strong> <span style="color: #28a745; font-weight: bold;">Paid</span></p>
+                <p><strong>Transaction ID:</strong> <span style="font-family: monospace; color: #555;">{{ order.transaction_id }}</span></p>
+            </div>
+            
+            <!-- Items Table -->
+            <h3>Order Details</h3>
+            <table class="order-items">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th style="text-align: center;">Qty</th>
+                        <th style="text-align: right;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Fix: order.items.all instead of order.order_items.all -->
+                    {% for item in order.items.all %}
+                    <tr>
+                        <td style="font-weight: 500;">
+                            {{ item.product.name }}
+                            <div style="font-size: 12px; color: #888; font-weight: normal;">৳{{ item.price }} each</div>
+                        </td>
+                        <td style="text-align: center;">{{ item.quantity }}</td>
+                        <td style="text-align: right; font-weight: 600;">৳{{ item.get_cost }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <!-- Total -->
+            <div class="order-total">
+                Grand Total: ৳{{ order.get_total_cost }}
+            </div>
+            
+            <!-- Shipping Info -->
+            <h3>Shipping Information</h3>
+            <div class="shipping-info">
+                <p style="font-weight: bold; color: #333;">{{ order.first_name }} {{ order.last_name }}</p>
+                <p>{{ order.address }}</p>
+                <p>{{ order.city }}, {{ order.postal_code }}</p>
+                <p style="margin-top: 10px;"><strong>Email:</strong> {{ order.email }}</p>
+                {% if order.note %}
+                <p><strong>Order Note:</strong> {{ order.note }}</p>
+                {% endif %}
+            </div>
+            
+            <p style="text-align: center; color: #777; margin-top: 30px;">
+                If you have any questions about your order, please contact our support team.
+            </p>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>© 2026 E-Shop. All rights reserved.</p>
+            <p>This is an automated email sent to {{ order.email }}, please do not reply.</p>
+        </div>
     </div>
 </body>
 </html>
