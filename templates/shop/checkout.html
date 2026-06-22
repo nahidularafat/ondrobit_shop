@@ -1,529 +1,352 @@
+{% extends 'shop/base.html' %}
 
-{% extends 'base.html' %}
-
-{% block title %}Checkout | E-Shop{% endblock %}
+{% block title %}Checkout | Ondrobit E-Shop{% endblock %}
 
 {% block extra_css %}
 <style>
-    :root {
-        --primary-color: #6a11cb;
-        --secondary-color: #2575fc;
-        --primary-light: rgba(106, 17, 203, 0.1);
-        --text-color: #333333;
-        --text-light: #6c757d;
-        --border-radius: 15px;
-        --box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-    }
-
-    .checkout-container {
-        padding-bottom: 3rem;
-        margin-top: 2rem;
-    }
-    
-    .checkout-header {
-        margin-bottom: 2rem;
-    }
-    
-    .checkout-title {
-        font-weight: 800;
-        margin-bottom: 1rem;
-        color: var(--text-color);
-    }
-    
-    /* Progress Steps */
+    /* Checkout Progress Steps */
     .checkout-steps {
-        display: flex;
-        margin-bottom: 1.5rem;
-        background: white;
-        padding: 1rem 1.5rem;
-        border-radius: var(--border-radius);
-        box-shadow: var(--box-shadow);
-    }
-    
-    .step {
-        display: flex;
-        align-items: center;
-        font-size: 0.95rem;
-        color: var(--text-light);
-        margin-right: 2.5rem;
-    }
-    
-    .step-number {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 28px;
-        height: 28px;
+        margin-bottom: 3rem;
+        position: relative;
+    }
+    .checkout-steps::before {
+        content: "";
+        position: absolute;
+        top: 20px;
+        left: 20%;
+        right: 20%;
+        height: 3px;
+        background-color: #e9ecef;
+        z-index: 0;
+    }
+    .step-item {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        width: 33.33%;
+    }
+    .step-circle {
+        width: 45px;
+        height: 45px;
         border-radius: 50%;
         background-color: #e9ecef;
-        margin-right: 0.5rem;
+        color: var(--text-light);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+        transition: all 0.3s ease;
+        border: 4px solid var(--bg-light);
+    }
+    .step-label {
         font-weight: 600;
-        font-size: 0.85rem;
+        color: var(--text-light);
     }
-    
-    .step.active {
-        color: var(--primary-color);
-        font-weight: 700;
-    }
-    
-    .step.active .step-number {
-        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    .step-item.completed .step-circle {
+        background: var(--success-color);
         color: white;
-        box-shadow: 0 4px 10px rgba(106, 17, 203, 0.3);
     }
-    
-    .step.completed {
-        color: #28a745;
-        font-weight: 600;
+    .step-item.active .step-circle {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        box-shadow: 0 0 0 5px rgba(106, 17, 203, 0.2);
+    }
+    .step-item.completed .step-label,
+    .step-item.active .step-label {
+        color: var(--text-color);
     }
 
-    .step.completed .step-number {
-        background-color: #28a745;
-        color: white;
-    }
-    
-    /* Cards */
+    /* Cards & Forms */
     .checkout-card {
         border: none;
         border-radius: var(--border-radius);
         box-shadow: var(--box-shadow);
-        overflow: hidden;
-        margin-bottom: 1.5rem;
-    }
-    
-    .checkout-card .card-header {
         background-color: white;
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+    }
+    .checkout-header {
+        background-color: rgba(106, 17, 203, 0.03);
         border-bottom: 1px solid rgba(0,0,0,0.05);
-        padding: 1.25rem 1.5rem;
+        padding: 1.5rem;
     }
-    
-    .checkout-card .card-header h5 {
-        margin-bottom: 0;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        color: var(--text-color);
+    .checkout-body {
+        padding: 2rem;
     }
-    
-    .checkout-card .card-header i {
-        margin-right: 0.75rem;
-        color: var(--primary-color);
-    }
-    
-    .checkout-card .card-body {
-        padding: 2rem 1.5rem;
-    }
-    
-    /* Form styling */
     .form-label {
         font-weight: 600;
-        margin-bottom: 0.5rem;
         color: var(--text-color);
+        font-size: 0.95rem;
     }
-    
-    .form-control {
-        border-radius: 8px;
-        padding: 0.75rem 1rem;
-        border: 1px solid #dee2e6;
-        transition: all 0.3s;
-    }
-    
-    .form-control:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.25rem rgba(106, 17, 203, 0.15);
-    }
-    
     .input-group-text {
         background-color: #f8f9fa;
-        border-radius: 8px 0 0 8px;
         border-right: none;
-        color: var(--text-light);
-    }
-
-    .form-control {
-        border-left: none;
-    }
-
-    .form-control:focus + .input-group-text {
-        border-color: var(--primary-color);
-    }
-    
-    .invalid-feedback {
-        font-size: 0.85rem;
-        display: block;
-    }
-    
-    /* Payment method styling */
-    .payment-method {
-        border: 2px solid var(--primary-light);
-        border-radius: 12px;
-        padding: 1.5rem;
-        margin-bottom: 1rem;
-        transition: all 0.3s;
-        background-color: #fcfcff;
-    }
-    
-    .payment-method:hover {
-        border-color: var(--primary-color);
-        box-shadow: 0 5px 15px rgba(106, 17, 203, 0.08);
-    }
-    
-    .payment-method-radio {
-        margin-right: 0.75rem;
-        transform: scale(1.2);
-    }
-    
-    .payment-method-label {
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        font-size: 1.1rem;
-        color: var(--text-color);
-    }
-    
-    .payment-method-icon {
-        font-size: 1.5rem;
-        margin-right: 0.75rem;
         color: var(--primary-color);
     }
-    
-    .payment-method-description {
-        margin-top: 0.5rem;
-        margin-left: 2.5rem;
-        font-size: 0.95rem;
-        color: var(--text-light);
+    .form-control {
+        border-left: none;
+        padding: 0.75rem 1rem;
     }
-    
-    /* Order summary styling */
-    .summary-card {
-        border: none;
+    .form-control:focus {
+        box-shadow: none;
+        border-color: #dee2e6;
+    }
+    .input-group:focus-within {
+        box-shadow: 0 0 0 0.25rem rgba(106, 17, 203, 0.15);
+        border-radius: 0.375rem;
+    }
+    .input-group:focus-within .input-group-text,
+    .input-group:focus-within .form-control {
+        border-color: var(--primary-light);
+    }
+
+    /* Payment Method Box */
+    .payment-method-box {
+        border: 2px solid var(--primary-light);
         border-radius: var(--border-radius);
-        box-shadow: var(--box-shadow);
+        padding: 1.5rem;
+        background-color: rgba(106, 17, 203, 0.02);
+        position: relative;
+    }
+    .secure-badge {
+        position: absolute;
+        top: -12px;
+        right: 20px;
+        background-color: var(--success-color);
+        color: white;
+        padding: 2px 10px;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+
+    /* Summary Section */
+    .summary-card {
         position: sticky;
-        top: 20px;
+        top: 100px;
     }
-    
-    .summary-card .card-header {
-        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-        color: white;
-        border-bottom: none;
-        padding: 1.25rem 1.5rem;
-        border-radius: var(--border-radius) var(--border-radius) 0 0;
-    }
-
-    .summary-card .card-header h5 {
-        color: white;
-    }
-
-    .summary-card .card-header i {
-        color: white;
-    }
-    
-    .summary-item {
-        padding: 1rem 0;
-        border-bottom: 1px dashed rgba(0,0,0,0.1);
-    }
-    
-    .summary-item:last-of-type {
-        border-bottom: none;
-    }
-    
-    .summary-item-image {
-        width: 65px;
-        height: 65px;
+    .summary-item-img {
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
         object-fit: cover;
-        border-radius: 10px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
-    
-    .summary-item-title {
-        font-weight: 700;
-        font-size: 0.95rem;
-        margin-bottom: 0.25rem;
-        color: var(--text-color);
-    }
-    
     .summary-row {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 0.85rem;
+        margin-bottom: 0.8rem;
+        font-size: 0.95rem;
         color: var(--text-light);
-        font-weight: 500;
     }
-    
-    .summary-row.total {
+    .summary-total {
         font-size: 1.25rem;
         font-weight: 800;
-        color: var(--primary-color);
-        margin-bottom: 0;
-        padding-top: 0.5rem;
-    }
-    
-    /* Action buttons */
-    .checkout-btn {
-        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-        border: none;
-        border-radius: 50px;
-        padding: 1rem 1.5rem;
-        font-weight: 700;
-        font-size: 1.1rem;
-        color: white;
-        transition: all 0.3s;
-        box-shadow: 0 8px 20px rgba(106, 17, 203, 0.3);
-    }
-    
-    .checkout-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 12px 25px rgba(106, 17, 203, 0.4);
-        color: white;
-    }
-    
-    .back-btn {
-        border-radius: 50px;
-        padding: 1rem 1.5rem;
-        font-weight: 600;
-        border-width: 2px;
-    }
-
-    .back-btn:hover {
-        background-color: #f8f9fa;
         color: var(--text-color);
+        border-top: 2px dashed #dee2e6;
+        padding-top: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .btn-place-order {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        padding: 14px;
+        font-weight: bold;
+        font-size: 1.1rem;
+        transition: all 0.3s;
+    }
+    .btn-place-order:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(106, 17, 203, 0.3);
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="container checkout-container">
-    <div class="checkout-header">
-        <h1 class="checkout-title">Checkout</h1>
-        <div class="checkout-steps">
-            <div class="step completed">
-                <div class="step-number">
-                    <i class="fas fa-check"></i>
-                </div>
-                <span>Cart</span>
-            </div>
-            <div class="step active">
-                <div class="step-number">2</div>
-                <span>Shipping & Payment</span>
-            </div>
-            <div class="step">
-                <div class="step-number">3</div>
-                <span>Confirmation</span>
-            </div>
-        </div>
+<div class="checkout-steps">
+    <div class="step-item completed">
+        <div class="step-circle"><i class="fas fa-check"></i></div>
+        <div class="step-label">Cart</div>
     </div>
+    <div class="step-item active">
+        <div class="step-circle">2</div>
+        <div class="step-label">Shipping & Payment</div>
+    </div>
+    <div class="step-item">
+        <div class="step-circle">3</div>
+        <div class="step-label">Confirmation</div>
+    </div>
+</div>
 
-    <div class="row">
-        <div class="col-lg-8">
-            <!-- Shipping Information Card -->
-            <div class="checkout-card card mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="fas fa-map-marker-alt"></i> Shipping Information
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <form method="post" action="{% url 'checkout' %}" id="checkout-form">
-                        {% csrf_token %}
-                        
-                        <div class="row g-4">
-                            <div class="col-md-6">
-                                <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                    <input type="text" class="form-control {% if form.first_name.errors %}is-invalid{% endif %}" 
-                                           id="{{ form.first_name.id_for_label }}" name="{{ form.first_name.html_name }}"
-                                           value="{{ form.first_name.value|default_if_none:'' }}" required placeholder="John">
-                                </div>
-                                {% for error in form.first_name.errors %}
-                                    <div class="invalid-feedback text-danger mt-1">{{ error }}</div>
-                                {% endfor %}
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                    <input type="text" class="form-control {% if form.last_name.errors %}is-invalid{% endif %}" 
-                                           id="{{ form.last_name.id_for_label }}" name="{{ form.last_name.html_name }}"
-                                           value="{{ form.last_name.value|default_if_none:'' }}" required placeholder="Doe">
-                                </div>
-                                {% for error in form.last_name.errors %}
-                                    <div class="invalid-feedback text-danger mt-1">{{ error }}</div>
-                                {% endfor %}
-                            </div>
-
-                            <div class="col-12">
-                                <label for="{{ form.email.id_for_label }}" class="form-label">Email Address</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                    <input type="email" class="form-control {% if form.email.errors %}is-invalid{% endif %}" 
-                                           id="{{ form.email.id_for_label }}" name="{{ form.email.html_name }}"
-                                           value="{{ form.email.value|default_if_none:'' }}" required placeholder="john@example.com">
-                                </div>
-                                {% for error in form.email.errors %}
-                                    <div class="invalid-feedback text-danger mt-1">{{ error }}</div>
-                                {% endfor %}
-                                <div class="form-text mt-1">We'll send your order confirmation and updates to this email.</div>
-                            </div>
-
-                            <div class="col-12">
-                                <label for="{{ form.address.id_for_label }}" class="form-label">Street Address</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-home"></i></span>
-                                    <input type="text" class="form-control {% if form.address.errors %}is-invalid{% endif %}" 
-                                           id="{{ form.address.id_for_label }}" name="{{ form.address.html_name }}"
-                                           value="{{ form.address.value|default_if_none:'' }}" required placeholder="123 Main St, Apartment 4B">
-                                </div>
-                                {% for error in form.address.errors %}
-                                    <div class="invalid-feedback text-danger mt-1">{{ error }}</div>
-                                {% endfor %}
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="{{ form.city.id_for_label }}" class="form-label">City</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-city"></i></span>
-                                    <input type="text" class="form-control {% if form.city.errors %}is-invalid{% endif %}" 
-                                           id="{{ form.city.id_for_label }}" name="{{ form.city.html_name }}"
-                                           value="{{ form.city.value|default_if_none:'' }}" required placeholder="Dhaka">
-                                </div>
-                                {% for error in form.city.errors %}
-                                    <div class="invalid-feedback text-danger mt-1">{{ error }}</div>
-                                {% endfor %}
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="{{ form.postal_code.id_for_label }}" class="form-label">Postal Code</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-map-pin"></i></span>
-                                    <input type="text" class="form-control {% if form.postal_code.errors %}is-invalid{% endif %}" 
-                                           id="{{ form.postal_code.id_for_label }}" name="{{ form.postal_code.html_name }}"
-                                           value="{{ form.postal_code.value|default_if_none:'' }}" required placeholder="1205">
-                                </div>
-                                {% for error in form.postal_code.errors %}
-                                    <div class="invalid-feedback text-danger mt-1">{{ error }}</div>
-                                {% endfor %}
-                            </div>
-
-                            <div class="col-12">
-                                <label for="{{ form.note.id_for_label }}" class="form-label">Order Notes <span class="text-muted fw-normal">(Optional)</span></label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
-                                    <textarea class="form-control {% if form.note.errors %}is-invalid{% endif %}" 
-                                              id="{{ form.note.id_for_label }}" name="{{ form.note.html_name }}" rows="3" 
-                                              placeholder="Special instructions for delivery...">{{ form.note.value|default_if_none:'' }}</textarea>
-                                </div>
-                                {% for error in form.note.errors %}
-                                    <div class="invalid-feedback text-danger mt-1">{{ error }}</div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </form>
-                </div>
+<div class="row g-4">
+    <div class="col-lg-7 col-xl-8">
+        
+        {% if form.errors %}
+            <div class="alert alert-danger shadow-sm border-0 rounded">
+                <h6 class="fw-bold mb-1"><i class="fas fa-exclamation-triangle me-2"></i>Please correct the following errors:</h6>
+                <ul class="mb-0">
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <li>{{ field.label }}: {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
             </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'checkout' %}" id="checkout-form">
+            {% csrf_token %}
             
-            <!-- Payment Method Card -->
-            <div class="checkout-card card mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="fas fa-credit-card"></i> Payment Method
-                    </h5>
+            <div class="checkout-card">
+                <div class="checkout-header">
+                    <h5 class="fw-bold m-0"><i class="fas fa-map-marker-alt text-primary me-2"></i>Shipping Address</h5>
                 </div>
-                <div class="card-body">
-                    <div class="payment-method shadow-sm">
-                        <div class="form-check d-flex align-items-center mb-2">
-                            <input class="form-check-input payment-method-radio" type="radio" form="checkout-form" 
-                                   name="payment_method" id="payment_sslcommerz" value="sslcommerz" checked>
-                            <label class="form-check-label payment-method-label mb-0 ms-2" for="payment_sslcommerz">
-                                <i class="fas fa-shield-alt payment-method-icon"></i> SSLCommerz Secure Payment
-                            </label>
+                <div class="checkout-body">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="far fa-user"></i></span>
+                                <input type="text" class="form-control {% if form.first_name.errors %}is-invalid{% endif %}" id="{{ form.first_name.id_for_label }}" name="{{ form.first_name.html_name }}" value="{{ form.first_name.value|default:'' }}" required placeholder="e.g. John">
+                            </div>
                         </div>
-                        <div class="payment-method-description">
-                            Pay securely using your Credit/Debit Card, Mobile Banking (bKash, Nagad, Rocket), or Internet Banking through SSLCommerz. All transactions are end-to-end encrypted.
+                        
+                        <div class="col-md-6">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="far fa-user"></i></span>
+                                <input type="text" class="form-control {% if form.last_name.errors %}is-invalid{% endif %}" id="{{ form.last_name.id_for_label }}" name="{{ form.last_name.html_name }}" value="{{ form.last_name.value|default:'' }}" required placeholder="e.g. Doe">
+                            </div>
                         </div>
-                        <div class="mt-3 ms-4 ps-2">
-                            <img src="https://securepay.sslcommerz.com/public/image/SSLCommerz-Pay-With-logo-All-Size-01.png" 
-                                 alt="SSLCommerz Supported Methods" height="35" class="opacity-75">
+
+                        <div class="col-12">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">Email Address <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="far fa-envelope"></i></span>
+                                <input type="email" class="form-control {% if form.email.errors %}is-invalid{% endif %}" id="{{ form.email.id_for_label }}" name="{{ form.email.html_name }}" value="{{ form.email.value|default:'' }}" required placeholder="you@example.com">
+                            </div>
+                            <small class="text-muted mt-1 d-block"><i class="fas fa-info-circle me-1"></i>Order confirmation will be sent here.</small>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="{{ form.address.id_for_label }}" class="form-label">Street Address <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-home"></i></span>
+                                <input type="text" class="form-control {% if form.address.errors %}is-invalid{% endif %}" id="{{ form.address.id_for_label }}" name="{{ form.address.html_name }}" value="{{ form.address.value|default:'' }}" required placeholder="House number and street name">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="{{ form.city.id_for_label }}" class="form-label">Town / City <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-city"></i></span>
+                                <input type="text" class="form-control {% if form.city.errors %}is-invalid{% endif %}" id="{{ form.city.id_for_label }}" name="{{ form.city.html_name }}" value="{{ form.city.value|default:'' }}" required placeholder="e.g. Dhaka">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="{{ form.postal_code.id_for_label }}" class="form-label">Postal / ZIP Code <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-map-pin"></i></span>
+                                <input type="text" class="form-control {% if form.postal_code.errors %}is-invalid{% endif %}" id="{{ form.postal_code.id_for_label }}" name="{{ form.postal_code.html_name }}" value="{{ form.postal_code.value|default:'' }}" required placeholder="e.g. 1216">
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="{{ form.note.id_for_label }}" class="form-label">Order Notes (Optional)</label>
+                            <div class="input-group">
+                                <span class="input-group-text align-items-start pt-2"><i class="far fa-edit"></i></span>
+                                <textarea class="form-control {% if form.note.errors %}is-invalid{% endif %}" id="{{ form.note.id_for_label }}" name="{{ form.note.html_name }}" rows="3" placeholder="Notes about your order, e.g. special notes for delivery.">{{ form.note.value|default:'' }}</textarea>
+                            </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <div class="checkout-card">
+                <div class="checkout-header">
+                    <h5 class="fw-bold m-0"><i class="fas fa-credit-card text-primary me-2"></i>Payment Method</h5>
+                </div>
+                <div class="checkout-body">
+                    <div class="payment-method-box">
+                        <span class="secure-badge"><i class="fas fa-shield-alt me-1"></i> Secure</span>
+                        
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="payment_method" id="sslcommerz" value="sslcommerz" checked style="transform: scale(1.2); margin-top: 0.3rem;">
+                            <label class="form-check-label ms-2 w-100" for="sslcommerz">
+                                <span class="fw-bold fs-5 text-dark d-block mb-1">SSLCommerz Gateway</span>
+                                <span class="text-muted small">Pay securely using Mobile Banking (bKash, Nagad), Credit/Debit Card, or Net Banking.</span>
+                                
+                                <div class="mt-3 bg-white p-2 rounded text-center d-inline-block">
+                                    <img src="https://securepay.sslcommerz.com/public/image/SSLCommerz-Pay-With-logo-All-Size-01.png" alt="SSLCommerz Gateway" height="35">
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-lg-5 col-xl-4">
+        <div class="checkout-card summary-card border-primary border-top border-4">
+            <div class="checkout-header bg-white">
+                <h5 class="fw-bold m-0">Your Order</h5>
+            </div>
+            <div class="checkout-body p-0">
+                <div class="p-4 bg-light">
+                    {% for item in cart.items.all %}
+                        <div class="d-flex align-items-center mb-3 pb-3 border-bottom border-secondary border-opacity-10">
+                            {% if item.product.image %}
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="summary-item-img me-3 border bg-white">
+                            {% else %}
+                                <div class="summary-item-img me-3 border bg-white d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-image text-muted"></i>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="flex-grow-1">
+                                <h6 class="fw-bold mb-1 lh-sm" style="font-size: 0.95rem;">{{ item.product.name }}</h6>
+                                <small class="text-muted">Qty: {{ item.quantity }} × ৳{{ item.product.price }}</small>
+                            </div>
+                            <div class="fw-bold ms-2">৳{{ item.get_cost }}</div>
+                        </div>
+                    {% endfor %}
                     
-                    <div class="d-grid gap-3 mt-5">
-                        <button type="submit" form="checkout-form" class="btn checkout-btn">
-                            <i class="fas fa-lock me-2"></i> Place Order Securely
-                        </button>
-                        <a href="{% url 'cart_detail' %}" class="btn btn-outline-secondary back-btn">
-                            <i class="fas fa-arrow-left me-2"></i> Back to Cart
+                    <div class="summary-row mt-4">
+                        <span>Subtotal</span>
+                        <span class="fw-bold text-dark">৳{{ cart.get_total_price }}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Shipping</span>
+                        <span class="text-success fw-bold">Free</span>
+                    </div>
+                    
+                    <div class="summary-row summary-total d-flex justify-content-between align-items-center">
+                        <span>Total Pay</span>
+                        <span class="text-primary fs-3">৳{{ cart.get_total_price }}</span>
+                    </div>
+                </div>
+                
+                <div class="p-4">
+                    <button type="submit" form="checkout-form" class="btn btn-place-order btn-primary w-100 rounded-pill shadow">
+                        <i class="fas fa-lock me-2"></i> Pay & Place Order
+                    </button>
+                    
+                    <div class="text-center mt-3">
+                        <a href="{% url 'cart_detail' %}" class="text-decoration-none text-muted small hover-primary">
+                            <i class="fas fa-arrow-left me-1"></i> Return to Cart
                         </a>
                     </div>
                 </div>
-            </div>
-        </div>
-        
-        <!-- Order Summary Sidebar -->
-        <div class="col-lg-4">
-            <div class="summary-card card">
-                <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="fas fa-shopping-basket me-2"></i> Order Summary
-                    </h5>
-                </div>
-                <div class="card-body p-4">
-                    <div class="mb-4" style="max-height: 350px; overflow-y: auto; padding-right: 5px;">
-                        {% for item in cart.items.all %}
-                        <div class="summary-item d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                                {% if item.product.image %}
-                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" 
-                                     class="summary-item-image">
-                                {% else %}
-                                <div class="bg-light text-center summary-item-image d-flex justify-content-center align-items-center">
-                                    <i class="fas fa-image text-muted"></i>
-                                </div>
-                                {% endif %}
-                            </div>
-                            <div class="flex-grow-1 ms-3">
-                                <h6 class="summary-item-title text-truncate" style="max-width: 180px;">{{ item.product.name }}</h6>
-                                <div class="d-flex justify-content-between align-items-center mt-1">
-                                    <span class="text-muted small">{{ item.quantity }} × ৳{{ item.product.price }}</span>
-                                    <span class="fw-bold text-dark">৳{{ item.get_cost }}</span>
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                    
-                    <div class="p-4 bg-light rounded-3">
-                        <div class="summary-row">
-                            <span>Subtotal:</span>
-                            <span class="text-dark fw-bold">৳{{ cart.get_total_price }}</span>
-                        </div>
-                        <div class="summary-row">
-                            <span>Shipping:</span>
-                            <span class="badge bg-success bg-opacity-10 text-success px-2 py-1 rounded">Free</span>
-                        </div>
-                        <div class="summary-row">
-                            <span>Tax:</span>
-                            <span class="text-dark fw-bold">৳0.00</span>
-                        </div>
-                        <hr class="my-3 border-secondary border-opacity-25">
-                        <div class="summary-row total">
-                            <span>Total to Pay:</span>
-                            <span>৳{{ cart.get_total_price }}</span>
-                        </div>
-                    </div>
-                    
-                    <div class="alert alert-success d-flex align-items-center mt-4 border-0 bg-success bg-opacity-10 text-success rounded-3" role="alert">
-                        <i class="fas fa-check-circle me-3 fa-lg"></i>
-                        <div class="small fw-semibold">
-                            Your payment information is encrypted and 100% secure.
-                        </div>
-                    </div>
-                </div>
+                
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
-

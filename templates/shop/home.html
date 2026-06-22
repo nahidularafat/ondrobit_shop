@@ -1,22 +1,21 @@
-{% extends 'base.html' %}
+{% extends 'shop/base.html' %}
 {% load static %}
 
-{% block title %}E-Shop - Home{% endblock %}
+{% block title %}Home | Ondrobit E-Shop{% endblock %}
 
 {% block extra_css %}
 <style>
     /* Hero Section */
     .hero-section {
-        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
         color: white;
-        border-radius: 15px;
+        border-radius: var(--border-radius);
         overflow: hidden;
         position: relative;
         padding: 4rem 2rem;
         margin-bottom: 4rem;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        box-shadow: var(--box-shadow);
     }
-    
     .hero-section::before {
         content: "";
         position: absolute;
@@ -27,20 +26,19 @@
         background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.1)" d="M0 100 C 20 0 50 0 100 100 Z"></path></svg>');
         background-size: 100% 100%;
     }
-    
     .hero-title {
         font-weight: 800;
         font-size: 3rem;
         margin-bottom: 1rem;
         text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        position: relative;
     }
-    
     .hero-subtitle {
         font-size: 1.5rem;
         margin-bottom: 2rem;
         opacity: 0.9;
+        position: relative;
     }
-    
     .hero-btn {
         padding: 12px 30px;
         font-size: 1.1rem;
@@ -51,253 +49,142 @@
         transition: all 0.3s ease;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         background-color: white;
-        color: #6a11cb;
+        color: var(--primary-color);
         border: none;
+        position: relative;
     }
-    
     .hero-btn:hover {
         transform: translateY(-3px);
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-        background-color: #f8f9fa;
-        color: #6a11cb;
+        background-color: var(--bg-light);
     }
-    
+
     /* Section Headers */
     .section-header {
         text-align: center;
         margin-bottom: 2.5rem;
         position: relative;
     }
-    
     .section-title {
         font-weight: 700;
         font-size: 2.2rem;
-        color: #333;
+        color: var(--text-color);
         margin-bottom: 1rem;
         position: relative;
         display: inline-block;
     }
-    
     .section-title:after {
         content: '';
         position: absolute;
         width: 50%;
         height: 4px;
-        background: linear-gradient(to right, #6a11cb, #2575fc);
+        background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
         bottom: -10px;
         left: 25%;
         border-radius: 10px;
     }
-    
-    .section-subtitle {
-        color: #6c757d;
-        max-width: 600px;
-        margin: 0 auto;
-    }
-    
+
     /* Product Cards */
     .product-card {
         border: none;
-        border-radius: 15px;
+        border-radius: var(--border-radius);
         overflow: hidden;
         transition: all 0.3s ease;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        box-shadow: var(--box-shadow);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
     }
-    
     .product-card:hover {
         transform: translateY(-10px);
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
     }
-    
     .product-img-container {
         height: 200px;
         overflow: hidden;
         position: relative;
-        background-color: #f8f9fa;
-        display: flex;
-        align-items: center;
-        justify-content: center;
     }
-    
     .product-img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         transition: transform 0.5s ease;
     }
-    
     .product-card:hover .product-img {
         transform: scale(1.1);
     }
-    
+    .card-body-flex {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
     .product-title {
         font-weight: 600;
-        font-size: 1.2rem;
-        margin-top: 0.5rem;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
         overflow: hidden;
         text-overflow: ellipsis;
         display: -webkit-box;
-        -webkit-line-clamp: 2;
         line-clamp: 2;
+        -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
-        height: 3rem;
     }
-    
-    .product-desc {
-        color: #6c757d;
-        font-size: 0.9rem;
-        margin-bottom: 1rem;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        line-clamp: 3;
-        -webkit-box-orient: vertical;
-        height: 4rem;
-    }
-    
     .product-price {
         font-weight: 700;
-        color: #212529;
+        color: var(--primary-color);
         font-size: 1.2rem;
     }
-    
     .rating {
         color: #ffc107;
+        font-size: 0.9rem;
     }
-    
-    .card-footer {
-        background-color: white;
-        border-top: 1px solid rgba(0, 0, 0, 0.05);
-    }
-    
-    .btn-outline-primary {
-        border-color: #6a11cb;
-        color: #6a11cb;
-    }
-    
-    .btn-outline-primary:hover {
-        background-color: #6a11cb;
-        border-color: #6a11cb;
-        color: white;
-    }
-    
-    .btn-primary {
-        background-color: #6a11cb;
-        border-color: #6a11cb;
-    }
-    
-    .btn-primary:hover {
-        background-color: #5a0cb8;
-        border-color: #5a0cb8;
-    }
-    
+
     /* Category Cards */
     .category-card {
         border: none;
-        border-radius: 15px;
+        border-radius: var(--border-radius);
         overflow: hidden;
         transition: all 0.3s ease;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        position: relative;
+        box-shadow: var(--box-shadow);
+        background-color: white;
     }
-    
     .category-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
     }
-    
     .category-icon {
-        font-size: 3rem;
+        font-size: 2.5rem;
         margin-bottom: 1rem;
-        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
         background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
-    
     .category-title {
         font-weight: 700;
-        margin-bottom: 0.5rem;
-        font-size: 1.5rem;
+        font-size: 1.2rem;
     }
-    
-    .category-btn {
-        border: none;
-        background-color: #f8f9fa;
-        color: #6a11cb;
-        border-radius: 50px;
-        padding: 8px 25px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
-    
-    .category-btn:hover {
-        background-color: #6a11cb;
-        color: white;
-        transform: translateY(-3px);
-    }
-    
-    /* Divider */
-    .section-divider {
-        margin: 5rem 0;
-        position: relative;
-        height: 1px;
-    }
-    
-    .section-divider::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 5%;
-        right: 5%;
-        height: 1px;
-        background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.1), transparent);
-    }
-    
+
     /* Features Section */
     .features-section {
-        background-color: #f8f9fa;
-        padding: 4rem 0;
-        border-radius: 15px;
+        background-color: white;
+        padding: 3rem 0;
+        border-radius: var(--border-radius);
         margin: 3rem 0;
+        box-shadow: var(--box-shadow);
     }
-    
     .feature-item {
         text-align: center;
-        padding: 1.5rem;
+        padding: 1rem;
     }
-    
     .feature-icon {
         font-size: 2.5rem;
         margin-bottom: 1rem;
-        color: #6a11cb;
+        color: var(--primary-color);
     }
-    
     .feature-title {
         font-weight: 600;
-        font-size: 1.2rem;
-        margin-bottom: 0.5rem;
-    }
-    
-    .feature-desc {
-        color: #6c757d;
-        font-size: 0.9rem;
-    }
-    
-    /* Mobile Responsiveness */
-    @media (max-width: 768px) {
-        .hero-title {
-            font-size: 2.2rem;
-        }
-        
-        .hero-subtitle {
-            font-size: 1.2rem;
-        }
-        
-        .section-title {
-            font-size: 1.8rem;
-        }
+        font-size: 1.1rem;
     }
 </style>
 {% endblock %}
@@ -306,134 +193,49 @@
 <div class="hero-section">
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-lg-7">
-                <h1 class="hero-title">Welcome to E-Shop</h1>
+            <div class="col-lg-8 text-center text-lg-start">
+                <h1 class="hero-title">Welcome to Ondrobit E-Shop</h1>
                 <p class="hero-subtitle">Discover premium products at unbeatable prices!</p>
-                <p class="mb-4">Shop our extensive catalog of high-quality products curated just for you.</p>
+                <p class="mb-4 d-none d-md-block position-relative">Shop our extensive catalog of high-quality products curated just for you with fast delivery across Bangladesh.</p>
                 <a class="btn hero-btn" href="{% url 'product_list' %}">
                     <i class="fas fa-shopping-bag me-2"></i>Explore Collection
                 </a>
             </div>
-            <div class="col-lg-5 d-none d-lg-block">
-                <div class="text-center">
-                    <img src="{% static 'welcome.jpg' %}" alt="Welcome to E-Shop" class="img-fluid rounded-3 shadow">
-                </div>
+            <div class="col-lg-4 d-none d-lg-block text-center position-relative">
+                <i class="fas fa-shopping-basket fa-10x" style="opacity: 0.8;"></i>
             </div>
         </div>
     </div>
 </div>
 
-<div class="container mb-5">
+<div class="container features-section">
     <div class="row g-4">
-        <div class="col-md-3">
-            <div class="feature-item shadow-sm rounded-3 bg-white h-100">
-                <div class="feature-icon mt-3">
-                    <i class="fas fa-truck"></i>
-                </div>
-                <h3 class="feature-title">Free Shipping</h3>
-                <p class="feature-desc pb-3">On orders over ৳500</p>
+        <div class="col-6 col-md-3">
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-truck"></i></div>
+                <h3 class="feature-title">Fast Delivery</h3>
+                <p class="text-muted small mb-0">All over Bangladesh</p>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="feature-item shadow-sm rounded-3 bg-white h-100">
-                <div class="feature-icon mt-3">
-                    <i class="fas fa-undo"></i>
-                </div>
+        <div class="col-6 col-md-3">
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-undo"></i></div>
                 <h3 class="feature-title">Easy Returns</h3>
-                <p class="feature-desc pb-3">30-day return policy</p>
+                <p class="text-muted small mb-0">7-day return policy</p>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="feature-item shadow-sm rounded-3 bg-white h-100">
-                <div class="feature-icon mt-3">
-                    <i class="fas fa-lock"></i>
-                </div>
+        <div class="col-6 col-md-3">
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-lock"></i></div>
                 <h3 class="feature-title">Secure Checkout</h3>
-                <p class="feature-desc pb-3">100% protected payments</p>
+                <p class="text-muted small mb-0">SSLCommerz protected</p>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="feature-item shadow-sm rounded-3 bg-white h-100">
-                <div class="feature-icon mt-3">
-                    <i class="fas fa-headset"></i>
-                </div>
+        <div class="col-6 col-md-3">
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-headset"></i></div>
                 <h3 class="feature-title">24/7 Support</h3>
-                <p class="feature-desc pb-3">Dedicated customer service</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="container">
-    <div class="section-header">
-        <h2 class="section-title">Featured Products</h2>
-        <p class="section-subtitle">Check out our most popular items loved by our customers</p>
-    </div>
-
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-        {% for product in featured_products %}
-        <div class="col">
-            <div class="card h-100 product-card">
-                <div class="product-img-container">
-                    {% if product.image %}
-                    <img src="{{ product.image.url }}" class="product-img" alt="{{ product.name }}">
-                    {% else %}
-                    <div class="bg-light text-center w-100 h-100 d-flex align-items-center justify-content-center">
-                        <i class="fas fa-image fa-3x text-muted"></i>
-                    </div>
-                    {% endif %}
-                </div>
-                <div class="card-body">
-                    <h5 class="product-title">{{ product.name }}</h5>
-                    <p class="product-desc">{{ product.description|truncatechars:80 }}</p>
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        <span class="product-price">৳{{ product.price }}</span>
-                        <div class="rating">
-                            {% for i in "12345" %}
-                            {% if forloop.counter <= product.average_rating %}
-                                <i class="fas fa-star text-warning"></i>
-                            {% else %}
-                                <i class="far fa-star text-warning"></i>
-                            {% endif %}
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-                <div class="card-footer p-3 bg-white">
-                    <div class="d-grid gap-2">
-                        <a href="{% url 'product_detail' product.slug %}" class="btn btn-sm btn-outline-primary">
-                            <i class="fas fa-eye me-1"></i> View Details
-                        </a>
-                        <form action="{% url 'cart_add' product.id %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-sm btn-primary w-100">
-                                <i class="fas fa-shopping-cart me-1"></i> Add to Cart
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% empty %}
-        <div class="col-12">
-            <div class="alert alert-info text-center py-4">No featured products available at the moment.</div>
-        </div>
-        {% endfor %}
-    </div>
-</div>
-
-<div class="container mt-5 mb-5">
-    <div class="card border-0 bg-light rounded-3 overflow-hidden shadow-sm">
-        <div class="row g-0">
-            <div class="col-md-6 d-none d-md-block">
-                <img src="https://placehold.co/600x400/2575fc/FFFFFF.png?text=Seasonal+Sale+50%+Off" alt="Seasonal sale" class="img-fluid" style="height: 100%; object-fit: cover; width: 100%;">            
-            </div>
-            <div class="col-md-6 p-5 d-flex align-items-center bg-white">
-                <div>
-                    <h3 class="display-6 fw-bold mb-3 text-primary">Seasonal Sale</h3>
-                    <p class="lead text-muted">Get up to 50% off on selected items this season. Limited time offer!</p>
-                    <a href="{% url 'product_list' %}" class="btn btn-primary btn-lg mt-2 px-4 rounded-pill">Shop Now</a>
-                </div>
+                <p class="text-muted small mb-0">Dedicated service</p>
             </div>
         </div>
     </div>
@@ -442,45 +244,109 @@
 <div class="container mb-5">
     <div class="section-header">
         <h2 class="section-title">Shop by Category</h2>
-        <p class="section-subtitle">Explore our wide range of product categories</p>
     </div>
     
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-3 justify-content-center">
         {% for category in categories %}
         <div class="col">
-            <div class="card h-100 category-card bg-light">
-                <div class="card-body text-center py-5">
+            <a href="{% url 'product_list_by_category' category.slug %}" class="text-decoration-none text-dark">
+                <div class="card h-100 category-card text-center p-3 py-4">
                     <div class="category-icon">
-                        <i class="fas fa-{% if forloop.counter == 1 %}tshirt{% elif forloop.counter == 2 %}laptop{% elif forloop.counter == 3 %}mobile-alt{% elif forloop.counter == 4 %}home{% elif forloop.counter == 5 %}shoe-prints{% else %}tag{% endif %}"></i>
+                        <i class="fas fa-{% if 'Electronics' in category.name or 'electronics' in category.name %}laptop{% elif 'Clothing' in category.name or 'Fashion' in category.name %}tshirt{% elif 'Home' in category.name %}home{% elif 'Food' in category.name %}utensils{% else %}box-open{% endif %}"></i>
                     </div>
-                    <h3 class="category-title mt-3">{{ category.name }}</h3>
-                    <p class="card-text text-muted mb-4">{{ category.description|default:"Explore top products in this category."|truncatechars:80 }}</p>
-                    <a href="{% url 'product_list_by_category' category.slug %}" class="btn category-btn shadow-sm">
-                        Browse Collection
-                    </a>
+                    <h3 class="category-title mb-0 fs-6">{{ category.name }}</h3>
                 </div>
-            </div>
+            </a>
         </div>
         {% empty %}
-        <div class="col-12">
-            <div class="alert alert-info text-center py-4">No categories available at the moment.</div>
+        <div class="col-12 text-center text-muted">
+            <p>No categories available.</p>
         </div>
         {% endfor %}
     </div>
 </div>
 
-<div class="container my-5">
-    <div class="card border-0 p-5 rounded-4" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; box-shadow: 0 15px 30px rgba(0,0,0,0.1);">
+<div class="container mb-5">
+    <div class="section-header d-flex justify-content-between align-items-end border-bottom pb-3">
+        <div class="text-start m-0">
+            <h2 class="section-title m-0">Latest Products</h2>
+        </div>
+        <a href="{% url 'product_list' %}" class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold">View All</a>
+    </div>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        {% for product in featured_products %}
+        <div class="col">
+            <div class="card product-card">
+                <a href="{% url 'product_detail' product.slug %}" class="text-decoration-none">
+                    <div class="product-img-container bg-light d-flex align-items-center justify-content-center">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" class="product-img" alt="{{ product.name }}">
+                        {% else %}
+                            <i class="fas fa-image fa-3x text-muted"></i>
+                        {% endif %}
+                    </div>
+                </a>
+                
+                <div class="card-body card-body-flex bg-white">
+                    <p class="text-muted small mb-1"><i class="fas fa-tag fa-sm me-1"></i>{{ product.category.name }}</p>
+                    <a href="{% url 'product_detail' product.slug %}" class="text-decoration-none text-dark">
+                        <h5 class="product-title" title="{{ product.name }}">{{ product.name }}</h5>
+                    </a>
+                    
+                    <div class="d-flex justify-content-between align-items-center mt-auto pt-3">
+                        <span class="product-price">৳{{ product.price }}</span>
+                        <div class="rating">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= product.average_rating %}
+                                    <i class="fas fa-star"></i>
+                                {% else %}
+                                    <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-footer bg-white border-top-0 pt-0 pb-3 px-3">
+                    <div class="d-grid gap-2">
+                        {% if product.stock > 0 %}
+                            <form action="{% url 'cart_add' product.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary w-100 rounded-pill fw-bold">
+                                    <i class="fas fa-cart-plus me-1"></i> Add to Cart
+                                </button>
+                            </form>
+                        {% else %}
+                            <button class="btn btn-secondary w-100 rounded-pill fw-bold" disabled>
+                                Out of Stock
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5 bg-white rounded shadow-sm">
+            <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+            <h4 class="text-muted">No products available at the moment.</h4>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="container mb-5">
+    <div class="card border-0 text-white p-5 rounded-3 shadow" style="background: linear-gradient(135deg, #1f1c2c 0%, #928dab 100%);">
         <div class="row justify-content-center">
             <div class="col-md-8 text-center">
                 <h3 class="display-6 mb-3 fw-bold">Subscribe to Our Newsletter</h3>
-                <p class="lead mb-4" style="opacity: 0.9;">Get updates on new arrivals, special offers, and discount coupons.</p>
-                <form class="row g-3 justify-content-center">
+                <p class="lead mb-4">Get updates on new arrivals, special offers and tech news.</p>
+                <form class="row g-2 justify-content-center">
                     <div class="col-md-8">
-                        <input type="email" class="form-control form-control-lg rounded-pill px-4" placeholder="Enter your email address" required>
+                        <input type="email" class="form-control form-control-lg rounded-pill px-4" placeholder="Your email address" required>
                     </div>
                     <div class="col-md-4">
-                        <button type="submit" class="btn btn-light btn-lg w-100 rounded-pill fw-bold text-primary">Subscribe</button>
+                        <button type="button" class="btn btn-light btn-lg w-100 rounded-pill fw-bold text-primary">Subscribe</button>
                     </div>
                 </form>
             </div>

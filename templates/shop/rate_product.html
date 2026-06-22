@@ -1,162 +1,101 @@
-{% extends 'base.html' %}
+{% extends 'shop/base.html' %}
 
-{% block title %}Rate {{ product.name }} | E-Shop{% endblock %}
+{% block title %}Rate {{ product.name }} | Ondrobit E-Shop{% endblock %}
 
 {% block extra_css %}
 <style>
-    .card {
-        border-radius: 15px;
+    .rate-card {
         border: none;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        background-color: white;
+        overflow: hidden;
     }
-
-    .card-header {
-        border-radius: 15px 15px 0 0;
+    .rate-header {
+        background: linear-gradient(135deg, rgba(106, 17, 203, 0.05) 0%, rgba(37, 117, 252, 0.05) 100%);
+        padding: 1.5rem;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
     }
-
-    .card-body {
-        padding: 2rem;
+    .product-preview-img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
     }
-
-    .form-label {
-        font-weight: 600;
-        color: #333;
-    }
-
     .form-control, .form-select {
         border-radius: 8px;
-        font-size: 1rem;
         padding: 0.75rem 1rem;
+        border-color: #dee2e6;
     }
-
     .form-control:focus, .form-select:focus {
-        box-shadow: 0 0 0 0.25rem rgba(106, 17, 203, 0.25);
-        border-color: #6a11cb;
-    }
-
-    .is-invalid {
-        border-color: #dc3545 !important;
-    }
-
-    .invalid-feedback {
-        display: block;
-        color: #dc3545;
-        font-size: 0.875em;
-        margin-top: 0.25rem;
-    }
-
-    .btn-primary {
-        background-color: #6a11cb;
-        border-color: #6a11cb;
-        font-weight: 600;
-        padding: 0.75rem 1.5rem;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-
-    .btn-primary:hover {
-        background-color: #5a0cb8;
-        border-color: #5a0cb8;
-        transform: translateY(-2px);
-    }
-
-    .btn-outline-secondary {
-        font-weight: 600;
-        padding: 0.75rem 1.5rem;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-
-    .btn-outline-secondary:hover {
-        transform: translateY(-2px);
-    }
-
-    .breadcrumb a {
-        text-decoration: none;
-        color: #6a11cb;
-        font-weight: 500;
-    }
-
-    .breadcrumb a:hover {
-        color: #5a0cb8;
-        text-decoration: underline;
+        border-color: var(--primary-light);
+        box-shadow: 0 0 0 0.25rem rgba(106, 17, 203, 0.15);
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="container my-4">
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb bg-light p-3 rounded-3 shadow-sm">
-            <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fas fa-home me-1"></i>Home</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'product_detail' product.slug %}">{{ product.name|truncatechars:30 }}</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Write a Review</li>
-        </ol>
-    </nav>
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'product_detail' product.slug %}">{{ product.name|truncatechars:30 }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Write a Review</li>
+    </ol>
+</nav>
 
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card shadow-lg">
-                <div class="card-header text-white py-3" style="background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);">
-                    <h4 class="mb-0 fw-bold"><i class="fas fa-star me-2 text-warning"></i>Rate {{ product.name }}</h4>
+<div class="row justify-content-center mb-5">
+    <div class="col-lg-8 col-xl-7">
+        <div class="rate-card">
+            <div class="rate-header d-flex align-items-center">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-preview-img me-3 bg-white">
+                {% else %}
+                    <div class="product-preview-img me-3 bg-white d-flex align-items-center justify-content-center">
+                        <i class="fas fa-image text-muted fa-2x"></i>
+                    </div>
+                {% endif %}
+                <div>
+                    <h5 class="fw-bold mb-1">{{ product.name }}</h5>
+                    <span class="badge bg-secondary">{{ product.category.name }}</span>
                 </div>
+            </div>
+            
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-4">Share your experience</h5>
                 
-                <div class="card-body">
-                    <div class="d-flex align-items-center mb-4 p-3 bg-light rounded-3 border">
-                        <div class="flex-shrink-0">
-                            {% if product.image %}
-                            <img src="{{ product.image.url }}" alt="{{ product.name }}" 
-                                 class="img-thumbnail border-0 shadow-sm" style="width: 90px; height: 90px; object-fit: cover; border-radius: 10px;">
-                            {% else %}
-                            <div class="bg-white text-center shadow-sm d-flex justify-content-center align-items-center" style="width: 90px; height: 90px; border-radius: 10px;">
-                                <i class="fas fa-image fa-2x text-muted"></i>
-                            </div>
-                            {% endif %}
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-4">
+                        <label for="{{ form.rating.id_for_label }}" class="form-label fw-bold">Overall Rating <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-warning"><i class="fas fa-star"></i></span>
+                            <select class="form-select {% if form.rating.errors %}is-invalid{% endif %}" id="{{ form.rating.id_for_label }}" name="{{ form.rating.html_name }}" required>
+                                <option value="" disabled {% if not form.rating.value %}selected{% endif %}>Select your rating</option>
+                                <option value="5" {% if form.rating.value == 5 %}selected{% endif %}>★★★★★ (5) Excellent - I loved it!</option>
+                                <option value="4" {% if form.rating.value == 4 %}selected{% endif %}>★★★★☆ (4) Very Good - Satisfied</option>
+                                <option value="3" {% if form.rating.value == 3 %}selected{% endif %}>★★★☆☆ (3) Good - It's okay</option>
+                                <option value="2" {% if form.rating.value == 2 %}selected{% endif %}>★★☆☆☆ (2) Fair - Could be better</option>
+                                <option value="1" {% if form.rating.value == 1 %}selected{% endif %}>★☆☆☆☆ (1) Poor - Very disappointed</option>
+                            </select>
                         </div>
-                        <div class="flex-grow-1 ms-4">
-                            <h5 class="mb-1 fw-bold text-dark">{{ product.name }}</h5>
-                            <p class="text-muted mb-0"><i class="fas fa-tag me-1"></i>{{ product.category.name }}</p>
-                        </div>
+                        {% if form.rating.errors %}<div class="text-danger small mt-1">{{ form.rating.errors.0 }}</div>{% endif %}
                     </div>
                     
-                    <form method="post">
-                        {% csrf_token %}
-                        
-                        <div class="mb-4">
-                            <label for="{{ form.rating.id_for_label }}" class="form-label">Your Rating <span class="text-danger">*</span></label>
-                            <select class="form-select {% if form.rating.errors %}is-invalid{% endif %}" 
-                                    id="{{ form.rating.id_for_label }}" name="{{ form.rating.html_name }}" required>
-                                <option value="" disabled {% if not form.rating.value %}selected{% endif %}>Select a rating...</option>
-                                <option value="5" {% if form.rating.value|stringformat:"s" == "5" %}selected{% endif %}>★★★★★ (5) - Excellent, highly recommend!</option>
-                                <option value="4" {% if form.rating.value|stringformat:"s" == "4" %}selected{% endif %}>★★★★☆ (4) - Very Good, satisfied.</option>
-                                <option value="3" {% if form.rating.value|stringformat:"s" == "3" %}selected{% endif %}>★★★☆☆ (3) - Good, but could be better.</option>
-                                <option value="2" {% if form.rating.value|stringformat:"s" == "2" %}selected{% endif %}>★★☆☆☆ (2) - Fair, has some issues.</option>
-                                <option value="1" {% if form.rating.value|stringformat:"s" == "1" %}selected{% endif %}>★☆☆☆☆ (1) - Poor, not recommended.</option>
-                            </select>
-                            {% for error in form.rating.errors %}
-                                <div class="invalid-feedback">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        
-                        <div class="mb-4">
-                            <label for="{{ form.comment.id_for_label }}" class="form-label">Your Review (Optional)</label>
-                            <textarea class="form-control {% if form.comment.errors %}is-invalid{% endif %}" 
-                                      id="{{ form.comment.id_for_label }}" name="{{ form.comment.html_name }}" 
-                                      rows="5" placeholder="Share your experience with this product...">{{ form.comment.value|default_if_none:'' }}</textarea>
-                            {% for error in form.comment.errors %}
-                                <div class="invalid-feedback">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        
-                        <div class="d-flex justify-content-between align-items-center mt-5">
-                            <a href="{% url 'product_detail' product.slug %}" class="btn btn-outline-secondary">
-                                <i class="fas fa-arrow-left me-1"></i> Cancel
-                            </a>
-                            <button type="submit" class="btn btn-primary px-4 shadow-sm">
-                                <i class="fas fa-paper-plane me-1"></i> Submit Review
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                    <div class="mb-4">
+                        <label for="{{ form.comment.id_for_label }}" class="form-label fw-bold">Write your review</label>
+                        <textarea class="form-control {% if form.comment.errors %}is-invalid{% endif %}" id="{{ form.comment.id_for_label }}" name="{{ form.comment.html_name }}" rows="5" placeholder="What did you like or dislike? What should other shoppers know before buying?">{{ form.comment.value|default:'' }}</textarea>
+                        {% if form.comment.errors %}<div class="text-danger small mt-1">{{ form.comment.errors.0 }}</div>{% endif %}
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                        <a href="{% url 'product_detail' product.slug %}" class="btn btn-light rounded-pill px-4 fw-bold text-muted border">Cancel</a>
+                        <button type="submit" class="btn btn-primary rounded-pill px-5 fw-bold shadow-sm">
+                            Submit Review
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

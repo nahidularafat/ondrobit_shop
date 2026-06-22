@@ -1,146 +1,153 @@
-{% extends 'base.html' %}
+{% extends 'shop/base.html' %}
 {% load socialaccount %}
 
-{% block title %}Log In | E-Shop{% endblock %}
+{% block title %}Log In | Ondrobit E-Shop{% endblock %}
 
 {% block extra_css %}
 <style>
-    .card {
-        border-radius: 15px;
+    .auth-wrapper {
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 0;
+    }
+    .auth-card {
         border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        background: white;
     }
-
-    .card-header {
-        border-radius: 15px 15px 0 0;
-    }
-
-    .card-body {
+    .auth-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
         padding: 2rem;
+        text-align: center;
+        color: white;
     }
-
-    .form-label {
-        font-weight: 600;
-        color: #333;
+    .auth-header-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        text-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
-
+    .auth-body {
+        padding: 2.5rem;
+    }
     .form-control {
-        border-radius: 8px;
-        font-size: 1rem;
         padding: 0.75rem 1rem;
-    }
-
-    .form-control:focus {
-        box-shadow: 0 0 0 0.25rem rgba(106, 17, 203, 0.25);
-        border-color: #6a11cb;
-    }
-
-    .btn-primary {
-        background-color: #6a11cb;
-        border-color: #6a11cb;
-        font-weight: 600;
-        padding: 0.75rem 1.5rem;
         border-radius: 8px;
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+    }
+    .form-control:focus {
+        background-color: white;
+        border-color: var(--primary-light);
+        box-shadow: 0 0 0 0.25rem rgba(106, 17, 203, 0.15);
+    }
+    .btn-auth {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        padding: 12px;
+        font-weight: bold;
         font-size: 1.1rem;
-        transition: all 0.3s ease;
-    }
-
-    .btn-primary:hover {
-        background-color: #5a0cb8;
-        border-color: #5a0cb8;
-        transform: translateY(-2px);
-    }
-
-    .btn-outline-danger {
-        font-weight: 600;
         border-radius: 50px;
-        padding: 0.75rem 2rem;
-        transition: all 0.3s ease;
+        transition: transform 0.2s, box-shadow 0.2s;
     }
-    
-    .btn-outline-danger:hover {
+    .btn-auth:hover {
         transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(106, 17, 203, 0.3);
+        color: white;
     }
-
-    hr.my-4 {
-        border-color: #e9ecef;
-        margin: 2rem 0;
+    .divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        margin: 1.5rem 0;
+        color: var(--text-light);
     }
-
-    .text-center a {
+    .divider::before, .divider::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid #e9ecef;
+    }
+    .divider::before { margin-right: .5em; }
+    .divider::after { margin-left: .5em; }
+    
+    .btn-google {
+        background-color: white;
+        border: 1px solid #e9ecef;
+        color: #333;
         font-weight: 600;
-        text-decoration: none;
+        padding: 10px;
+        border-radius: 50px;
+        transition: background-color 0.2s;
     }
-
-    .text-center p {
-        color: #6c757d;
+    .btn-google:hover {
+        background-color: #f8f9fa;
+    }
+    .google-icon {
+        color: #DB4437;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5">
-            <div class="card shadow-lg">
-                <div class="card-header text-white text-center py-4" style="background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);">
-                    <h3 class="mb-0 fw-bold">Welcome Back!</h3>
-                    <p class="mb-0 mt-2" style="opacity: 0.8;">Please login to your account</p>
-                </div>
-                
-                <div class="card-body p-4 p-md-5">
-                    {% if error %}
-                    <div class="alert alert-danger rounded-3 text-center fw-semibold">
-                        <i class="fas fa-exclamation-circle me-1"></i> {{ error }}
+<div class="auth-wrapper">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-5">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <i class="fas fa-user-circle auth-header-icon"></i>
+                        <h3 class="fw-bold mb-0">Welcome Back</h3>
+                        <p class="mb-0 text-white-50">Log in to your account to continue</p>
                     </div>
-                    {% endif %}
                     
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }} rounded-3 text-center fw-semibold">
-                                {{ message }}
+                    <div class="auth-body">
+                        {% if error %}
+                            <div class="alert alert-danger shadow-sm border-0 rounded p-3 mb-4">
+                                <i class="fas fa-exclamation-circle me-2"></i>{{ error }}
                             </div>
-                        {% endfor %}
-                    {% endif %}
+                        {% endif %}
 
-                    <form method="post">
-                        {% csrf_token %}
-                        
-                        <div class="mb-4">
-                            <label for="username" class="form-label">Username</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-user text-muted"></i></span>
-                                <input type="text" class="form-control border-start-0" id="username" name="username" placeholder="Enter your username" required>
+                        <form method="post" action="{% url 'login' %}">
+                            {% csrf_token %}
+                            
+                            <div class="mb-4">
+                                <label for="username" class="form-label fw-bold text-secondary small">Username</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 text-muted"><i class="fas fa-user"></i></span>
+                                    <input type="text" class="form-control border-start-0 ps-0" id="username" name="username" placeholder="Enter your username" required autofocus>
+                                </div>
                             </div>
+                            
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between">
+                                    <label for="password" class="form-label fw-bold text-secondary small">Password</label>
+                                    <a href="#" class="text-decoration-none small text-primary">Forgot Password?</a>
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 text-muted"><i class="fas fa-lock"></i></span>
+                                    <input type="password" class="form-control border-start-0 ps-0" id="password" name="password" placeholder="Enter your password" required>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-primary btn-auth">Log In</button>
+                            </div>
+                        </form>
+                        
+                        <div class="divider small text-muted">OR CONTINUE WITH</div>
+                        
+                        <div class="d-grid">
+                            <a href="{% provider_login_url 'google' next=request.GET.next|default:'/' %}" class="btn btn-google shadow-sm">
+                                <i class="fab fa-google google-icon me-2"></i> Sign in with Google
+                            </a>
                         </div>
                         
-                        <div class="mb-4">
-                            <div class="d-flex justify-content-between">
-                                <label for="password" class="form-label">Password</label>
-                            </div>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-lock text-muted"></i></span>
-                                <input type="password" class="form-control border-start-0" id="password" name="password" placeholder="Enter your password" required>
-                            </div>
+                        <div class="text-center mt-4">
+                            <p class="text-muted mb-0">Don't have an account? <a href="{% url 'register' %}" class="fw-bold text-primary text-decoration-none">Sign up here</a></p>
                         </div>
-                        
-                        <div class="d-grid gap-2 mt-4 pt-2">
-                            <button type="submit" class="btn btn-primary btn-lg shadow-sm">Log In</button>
-                        </div>
-                    </form>
-                    
-                    <div class="position-relative mt-5 mb-4">
-                        <hr class="my-0">
-                        <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted small fw-bold text-uppercase">Or sign in with</span>
-                    </div>
-                    
-                    <div class="text-center">
-                        <a href="{% provider_login_url 'google' next=request.GET.next %}" class="btn btn-outline-danger rounded-pill px-5 py-2 fw-bold">
-                            <i class="fab fa-google me-2"></i> Google
-                        </a>
-                    </div>
-                    
-                    <div class="text-center mt-4 pt-2">
-                        <p class="mb-0 text-muted">Don't have an account? <a href="{% url 'register' %}" class="text-primary">Sign up here</a></p>
                     </div>
                 </div>
             </div>
