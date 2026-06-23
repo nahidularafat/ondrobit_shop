@@ -5,7 +5,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('shop.urls')), 
+    path('accounts/', include('allauth.urls')), 
+    path('', include('shop.urls')),
 ]
 
 # এই লাইনটি ঠিক এভাবেই থাকতে হবে

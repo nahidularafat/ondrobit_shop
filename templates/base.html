@@ -3,255 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Ondrobit E-Shop | Premium Online Shopping{% endblock %}</title>
+    <title>{% block title %}Ondrobit Shop{% endblock %}</title>
     
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Bootstrap & FontAwesome -->
+    <!-- Bootstrap 5 & FontAwesome -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            var(--primary-color): #0f172a;
+            --primary-color: #0f172a;
             --secondary-color: #3b82f6;
             --danger-color: #ef4444;
-            --text-main: #334155;
-            --bg-body: #f8fafc;
-            --bg-white: #ffffff;
-            --nav-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
         }
+        body { font-family: 'Segoe UI', sans-serif; background: #f8fafc; }
         
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        h1, h2, h3, h4, h5, h6, .navbar-brand {
-            font-family: 'Poppins', sans-serif;
-        }
-        main { flex: 1; }
-
-        /* Navbar */
-        .navbar {
-            background-color: var(--bg-white) !important;
-            box-shadow: var(--nav-shadow);
-            padding: 1rem 0;
-        }
-        .navbar-brand {
-            font-weight: 800;
-            font-size: 1.6rem;
-            color: var(--primary-color) !important;
-        }
-        .brand-dot { color: var(--secondary-color); }
-        .nav-link {
-            font-weight: 500;
-            color: var(--text-main) !important;
-        }
-        .nav-link:hover { color: var(--secondary-color) !important; }
-        
-        /* Search Bar */
-        .search-form .input-group {
-            background: #f1f5f9;
-            border-radius: 50px;
-            overflow: hidden;
-            border: 1px solid transparent;
-        }
-        .search-form .input-group:focus-within {
-            border-color: var(--secondary-color);
-            background: var(--bg-white);
-        }
-        .search-form input {
-            background: transparent;
-            border: none;
-            padding: 0.6rem 1.2rem;
-            box-shadow: none !important;
-        }
-        .search-form .btn {
-            background: transparent;
-            color: #64748b;
-            border: none;
-        }
-
-        /* Cart Icon */
-        .cart-icon-wrapper {
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: #f1f5f9;
-            color: var(--primary-color);
-            text-decoration: none;
-            transition: 0.3s;
-        }
-        .cart-icon-wrapper:hover {
-            background: var(--primary-color);
-            color: white;
-        }
+        /* Navbar Customization */
+        .navbar-brand { font-weight: 800; color: var(--primary-color) !important; }
+        .cart-icon-wrapper { position: relative; color: var(--primary-color); }
         .cart-badge {
-            position: absolute;
-            top: -2px;
-            right: -2px;
-            background-color: var(--danger-color);
-            color: white;
-            font-size: 0.7rem;
-            font-weight: 700;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid var(--bg-white);
+            position: absolute; top: -8px; right: -8px;
+            background: var(--danger-color); color: white;
+            font-size: 0.7rem; border-radius: 50%; padding: 2px 6px;
         }
-
-        /* Buttons */
-        .btn { transition: all 0.2s ease; }
-        .btn:active { transform: scale(0.95); }
-        .btn-primary { background-color: var(--secondary-color); border: none; font-weight: 600; }
-        .btn-outline-primary { color: var(--secondary-color); border: 1px solid #cbd5e1; font-weight: 600; }
-
+        .nav-link { color: var(--primary-color) !important; font-weight: 600; }
+        
         /* Footer */
-        .footer { background-color: #0f172a; color: #cbd5e1; padding: 3rem 0 1rem; margin-top: 5rem; }
-        .footer a { color: #94a3b8; text-decoration: none; }
-        .footer a:hover { color: var(--secondary-color); }
-
-        /* Mobile Adjustments */
-        @media (max-width: 991px) {
-            .navbar-collapse {
-                background: white;
-                padding: 1rem;
-                border-radius: 10px;
-                box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-                margin-top: 10px;
-            }
-            .mobile-action-bar {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                width: 100%;
-                margin-top: 1rem;
-                padding-top: 1rem;
-                border-top: 1px solid #f1f5f9;
-            }
-        }
+        .footer { background: var(--primary-color); color: #fff; padding: 2rem 0; margin-top: 3rem; }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
 
-    <!-- Professional & Responsive Navbar -->
-    <nav class="navbar navbar-expand-lg sticky-top">
+    <!-- Professional Navbar -->
+    <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top">
         <div class="container">
-            <!-- Brand Logo -->
-            <a class="navbar-brand" href="{% url 'home' %}">
-                <i class="fas fa-shopping-bag text-primary me-1"></i>Ondrobit<span class="brand-dot">.</span>
-            </a>
-            
-            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <i class="fas fa-bars fs-4 text-dark"></i>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-3 mb-lg-0 ms-lg-4">
-                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'product_list' %}">All Products</a></li>
-                </ul>
-                
-                <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-3 w-100 justify-content-lg-end">
+            <!-- Brand & Toggle -->
+            <div class="d-flex justify-content-between align-items-center w-100">
+                <a class="navbar-brand" href="{% url 'home' %}">
+                    <i class="fas fa-shopping-bag text-primary me-2"></i>Ondrobit Shop
+                </a>
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <!-- Collapsible Content -->
+            <div class="collapse navbar-collapse mt-3" id="navbarNav">
+                <div class="d-flex flex-column w-100">
                     
-                    <!-- Search Form -->
-                    <form class="search-form w-100" style="max-width: 400px;" action="{% url 'product_list' %}" method="GET">
-                        <div class="input-group">
-                            <input class="form-control" type="search" name="search" placeholder="Search products..." value="{{ request.GET.search }}">
-                            <button class="btn" type="submit"><i class="fas fa-search"></i></button>
-                        </div>
-                    </form>
-                    
-                    <!-- Mobile Action Bar (Cart + Auth) -->
-                    <div class="mobile-action-bar d-lg-flex align-items-lg-center gap-3">
-                        
-                        <!-- Cart Icon -->
-                        <a href="{% url 'cart_detail' %}" class="cart-icon-wrapper flex-shrink-0">
-                            <i class="fas fa-shopping-cart"></i>
-                            {% if cart_items_count > 0 %}
-                                <span class="cart-badge">{{ cart_items_count }}</span>
-                            {% endif %}
+                    <!-- Row 1: Search & Cart -->
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <form class="flex-grow-1" action="{% url 'product_list' %}" method="GET">
+                            <div class="input-group">
+                                <input class="form-control" type="search" name="search" placeholder="Search products..." value="{{ request.GET.search }}">
+                                <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
+                            </div>
+                        </form>
+                        <a href="{% url 'cart_detail' %}" class="cart-icon-wrapper text-decoration-none px-2">
+                            <i class="fas fa-shopping-cart fa-lg"></i>
+                            {% if cart_items_count > 0 %}<span class="cart-badge">{{ cart_items_count }}</span>{% endif %}
                         </a>
+                    </div>
 
-                        <!-- User Menu / Buttons -->
-                        <div class="d-flex gap-2 w-100 justify-content-end justify-content-lg-start">
+                    <!-- Row 2: Links & Auth -->
+                    <div class="d-flex justify-content-between align-items-center border-top pt-3">
+                        <ul class="navbar-nav flex-row gap-4">
+                            <li class="nav-item"><a class="nav-link p-0" href="{% url 'home' %}">Home</a></li>
+                            <li class="nav-item"><a class="nav-link p-0" href="{% url 'product_list' %}">All Products</a></li>
+                        </ul>
+                        <div class="d-flex gap-2">
                             {% if user.is_authenticated %}
-                                <div class="dropdown">
-                                    <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 p-0" href="#" data-bs-toggle="dropdown">
-                                        <div class="cart-icon-wrapper bg-primary text-white" style="width: 45px; height: 45px;">
-                                            <i class="far fa-user"></i>
-                                        </div>
-                                    </a>
-                                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
-                                        <li class="px-3 py-2 text-muted small border-bottom mb-2">Hello, <br><strong class="text-dark">{{ user.username }}</strong></li>
-                                        <li><a class="dropdown-item py-2" href="{% url 'profile' %}"><i class="far fa-id-badge me-2 text-muted"></i> Profile</a></li>
-                                        <li><a class="dropdown-item py-2" href="{% url 'profile' %}?tab=orders"><i class="fas fa-box-open me-2 text-muted"></i> Orders</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item py-2 text-danger" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
-                                    </ul>
-                                </div>
+                                <a href="{% url 'logout' %}" class="btn btn-sm btn-outline-danger rounded-pill px-3">Logout</a>
                             {% else %}
-                                <a class="btn btn-outline-primary rounded-pill px-3 px-lg-4" href="{% url 'login' %}">Login</a>
-                                <a class="btn btn-primary rounded-pill px-3 px-lg-4" href="{% url 'register' %}">Register</a>
+                                <a href="{% url 'login' %}" class="btn btn-sm btn-outline-primary rounded-pill px-3">Login</a>
+                                <a href="{% url 'register' %}" class="btn btn-sm btn-primary rounded-pill px-3">Register</a>
                             {% endif %}
                         </div>
-
                     </div>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Global Messages -->
-    <div class="container mt-4">
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show shadow-sm border-0 d-flex align-items-center" role="alert">
-                    <i class="fas fa-info-circle fs-5 me-2"></i>
-                    <div>{{ message }}</div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            {% endfor %}
-        {% endif %}
-    </div>
-
-    <!-- Main Content -->
+    <!-- Content -->
     <main class="container my-4">
         {% block content %}{% endblock %}
     </main>
 
     <!-- Footer -->
-    <footer class="footer">
-        <div class="container text-center text-md-start">
-            <div class="row g-4">
-                <div class="col-md-6 mb-4">
-                    <h4 class="text-white fw-bold mb-3"><i class="fas fa-shopping-bag text-primary me-2"></i>Ondrobit.</h4>
-                    <p class="text-muted">Your premium destination for high-quality products in Bangladesh.</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <p class="mb-0 text-muted mt-md-4">&copy; {% now "Y" %} Ondrobit E-Shop. All rights reserved.</p>
-                </div>
-            </div>
+    <footer class="footer text-center">
+        <div class="container">
+            <p>&copy; {% now "Y" %} Ondrobit Shop. All rights reserved.</p>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    {% block extra_js %}{% endblock %}
 </body>
 </html>
