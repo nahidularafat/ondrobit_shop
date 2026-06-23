@@ -88,11 +88,12 @@
         border-right: none;
         color: var(--primary-color);
     }
-    .form-control {
+    /* Django generated widgets manually styled or standard class target */
+    .form-control, .form-select {
         border-left: none;
         padding: 0.75rem 1rem;
     }
-    .form-control:focus {
+    .form-control:focus, .form-select:focus {
         box-shadow: none;
         border-color: #dee2e6;
     }
@@ -101,12 +102,13 @@
         border-radius: 0.375rem;
     }
     .input-group:focus-within .input-group-text,
-    .input-group:focus-within .form-control {
+    .input-group:focus-within .form-control,
+    .input-group:focus-within .form-select {
         border-color: var(--primary-light);
     }
 
     /* Payment Method Box */
-    .payment-method-box {
+    .payment-method-container {
         border: 2px solid var(--primary-light);
         border-radius: var(--border-radius);
         padding: 1.5rem;
@@ -199,7 +201,7 @@
             </div>
         {% endif %}
 
-        <form method="post" action="{% url 'checkout' %}" id="checkout-form">
+        <form method="post" action="{% url 'checkout' %}" id="checkout-form" class="needs-validation" novalidate>
             {% csrf_token %}
             
             <div class="checkout-card">
@@ -209,7 +211,7 @@
                 <div class="checkout-body">
                     <div class="row g-4">
                         <div class="col-md-6">
-                            <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name <span class="text-danger">*</span></label>
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="far fa-user"></i></span>
                                 <input type="text" class="form-control {% if form.first_name.errors %}is-invalid{% endif %}" id="{{ form.first_name.id_for_label }}" name="{{ form.first_name.html_name }}" value="{{ form.first_name.value|default:'' }}" required placeholder="e.g. John">
@@ -217,7 +219,7 @@
                         </div>
                         
                         <div class="col-md-6">
-                            <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name <span class="text-danger">*</span></label>
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="far fa-user"></i></span>
                                 <input type="text" class="form-control {% if form.last_name.errors %}is-invalid{% endif %}" id="{{ form.last_name.id_for_label }}" name="{{ form.last_name.html_name }}" value="{{ form.last_name.value|default:'' }}" required placeholder="e.g. Doe">
@@ -225,7 +227,7 @@
                         </div>
 
                         <div class="col-12">
-                            <label for="{{ form.email.id_for_label }}" class="form-label">Email Address <span class="text-danger">*</span></label>
+                            <label for="{{ form.email.id_for_label }}" class="form-label">Email Address</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="far fa-envelope"></i></span>
                                 <input type="email" class="form-control {% if form.email.errors %}is-invalid{% endif %}" id="{{ form.email.id_for_label }}" name="{{ form.email.html_name }}" value="{{ form.email.value|default:'' }}" required placeholder="you@example.com">
@@ -234,7 +236,15 @@
                         </div>
 
                         <div class="col-12">
-                            <label for="{{ form.address.id_for_label }}" class="form-label">Street Address <span class="text-danger">*</span></label>
+                            <label for="{{ form.phone.id_for_label }}" class="form-label">Mobile Number <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-phone-alt"></i></span>
+                                <input type="text" class="form-control {% if form.phone.errors %}is-invalid{% endif %}" id="{{ form.phone.id_for_label }}" name="{{ form.phone.html_name }}" value="{{ form.phone.value|default:'' }}" required placeholder="e.g. 017XXXXXXXX">
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="{{ form.address.id_for_label }}" class="form-label">Street Address</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-home"></i></span>
                                 <input type="text" class="form-control {% if form.address.errors %}is-invalid{% endif %}" id="{{ form.address.id_for_label }}" name="{{ form.address.html_name }}" value="{{ form.address.value|default:'' }}" required placeholder="House number and street name">
@@ -242,7 +252,7 @@
                         </div>
 
                         <div class="col-md-6">
-                            <label for="{{ form.city.id_for_label }}" class="form-label">Town / City <span class="text-danger">*</span></label>
+                            <label for="{{ form.city.id_for_label }}" class="form-label">Town / City</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-city"></i></span>
                                 <input type="text" class="form-control {% if form.city.errors %}is-invalid{% endif %}" id="{{ form.city.id_for_label }}" name="{{ form.city.html_name }}" value="{{ form.city.value|default:'' }}" required placeholder="e.g. Dhaka">
@@ -250,7 +260,7 @@
                         </div>
 
                         <div class="col-md-6">
-                            <label for="{{ form.postal_code.id_for_label }}" class="form-label">Postal / ZIP Code <span class="text-danger">*</span></label>
+                            <label for="{{ form.postal_code.id_for_label }}" class="form-label">Postal / ZIP Code</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-map-pin"></i></span>
                                 <input type="text" class="form-control {% if form.postal_code.errors %}is-invalid{% endif %}" id="{{ form.postal_code.id_for_label }}" name="{{ form.postal_code.html_name }}" value="{{ form.postal_code.value|default:'' }}" required placeholder="e.g. 1216">
@@ -270,23 +280,31 @@
 
             <div class="checkout-card">
                 <div class="checkout-header">
-                    <h5 class="fw-bold m-0"><i class="fas fa-credit-card text-primary me-2"></i>Payment Method</h5>
+                    <h5 class="fw-bold m-0"><i class="fas fa-credit-card text-primary me-2"></i>Select Payment Method</h5>
                 </div>
                 <div class="checkout-body">
-                    <div class="payment-method-box">
-                        <span class="secure-badge"><i class="fas fa-shield-alt me-1"></i> Secure</span>
+                    <div class="payment-method-container">
+                        <span class="secure-badge"><i class="fas fa-shield-alt me-1"></i> Secure Connection</span>
                         
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="payment_method" id="sslcommerz" value="sslcommerz" checked style="transform: scale(1.2); margin-top: 0.3rem;">
-                            <label class="form-check-label ms-2 w-100" for="sslcommerz">
-                                <span class="fw-bold fs-5 text-dark d-block mb-1">SSLCommerz Gateway</span>
-                                <span class="text-muted small">Pay securely using Mobile Banking (bKash, Nagad), Credit/Debit Card, or Net Banking.</span>
-                                
-                                <div class="mt-3 bg-white p-2 rounded text-center d-inline-block">
-                                    <img src="https://securepay.sslcommerz.com/public/image/SSLCommerz-Pay-With-logo-All-Size-01.png" alt="SSLCommerz Gateway" height="35">
+                        {% for radio in form.payment_method %}
+                            <div class="form-check my-3 p-2 rounded hover-bg-light border-bottom border-opacity-10 pb-3">
+                                <div class="d-flex align-items-center">
+                                    <span style="transform: scale(1.25); display: inline-block;" class="me-2">
+                                        {{ radio.tag }}
+                                    </span>
+                                    <label class="form-check-label ms-2 w-100" for="{{ radio.id_for_label }}">
+                                        <span class="fw-bold fs-5 text-dark d-block mb-1">{{ radio.choice_label }}</span>
+                                        
+                                        {% if radio.choice_value == 'sslcommerz' %}
+                                            <span class="text-muted small d-block">Pay securely using Mobile Banking (bKash, Nagad), Credit/Debit Card, or Net Banking.</span>
+                                            <div class="mt-2 bg-white p-2 rounded text-center d-inline-block border">
+                                                <img src="https://securepay.sslcommerz.com/public/image/SSLCommerz-Pay-With-logo-All-Size-01.png" alt="SSLCommerz Gateway" height="30">
+                                            </div>
+                                        {% endif %}
+                                    </label>
                                 </div>
-                            </label>
-                        </div>
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>

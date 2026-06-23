@@ -22,7 +22,8 @@ urlpatterns = [
     
     # Checkout
     path('checkout/', views.checkout, name="checkout"),
-    path('payment/process/', views.payment_process, name="payment_process"),
+    # shop/urls.py এর ২৫ নম্বর লাইনটি পরিবর্তন করে দিন (যদি ভিউ এর নাম payment_success হয়)
+    path('payment/process/', views.payment_success, name="payment_process"),
     path('payment/success/<int:order_id>/', views.payment_success, name="payment_success"),
     path('payment/fail/<int:order_id>/', views.payment_fail, name="payment_fail"),
     path('payment/cancel/<int:order_id>/', views.payment_cancel, name="payment_cancel"),

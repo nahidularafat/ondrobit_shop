@@ -232,20 +232,70 @@ def checkout(request):
     return render(request, 'shop/checkout.html', {'form': form, 'cart': cart_obj}) 
     
 @csrf_exempt
+# shop/views.py এর ভেতরের checkout ভিউটি এভাবে আপডেট করুন
+
 @login_required
-def payment_process(request):
-    order_id = request.session.get('order_id')
-    if not order_id:
-        return redirect('home')
-    
-    order = get_object_or_404(Order, id=order_id)
-    payment_data = generate_sslcommerz_payment(request, order)
-    
-    if payment_data['status'] == 'SUCCESS':
-        return redirect(payment_data['GatewayPageURL'])
+def checkout(request):
+    cart_obj, created = cart.objects.get_or_create(user=request.user)
+    if not cart_obj.items.exists():
+        messages.warning(request, "Your cart is empty!")
+        return redirect('product_list')
+        
+    if request.method == 'POST':
+        form = CheckoutForm(request.POST)
+        if form.is_valid():
+            order = form.save(commit=False)
+            order.user = request.user
+            order.save()
+            
+            # কার্টের আইটেমগুলো অর্ডার আইটেম হিসেবে সেভ করা
+            for item in cart_obj.items.all():
+                # কার্ট আইটেমের প্রাইস হিসেবে ডিসকাউন্টেড প্রাইসটি (current_price) নেওয়া হচ্ছে
+                OrderItem.objects.create(
+                    order=order,
+                    product=item.product,
+                    price=item.product.current_price, 
+                    quantity=item.quantity
+                )
+            
+            # কার্ট খালি করা
+            cart_obj.items.all().delete()
+            
+            # পেমেন্ট মেথড চেক করা
+            if order.payment_method == 'COD':
+                # ক্যাশ অন ডেলিভারি হলে সরাসরি পেমেন্ট সাকসেস বা কনফার্মেশন পেজে যাবে
+                order.status = 'Pending'
+                order.paid = False
+                order.save()
+                
+                # স্টক কমানো
+                for item in order.items.all():
+                    product = item.product
+                    if product.stock >= item.quantity:
+                        product.stock -= item.quantity
+                    else:
+                        product.stock = 0
+                    product.save()
+                
+                send_order_confirmation_email(order)
+                messages.success(request, 'Order placed successfully with Cash on Delivery!')
+                return render(request, 'shop/payment_success.html', {'order': order})
+            else:
+                # অনলাইন পেমেন্ট (SSLCOMMERZ) হলে গেটওয়েতে পাঠানো
+                response_data = generate_sslcommerz_payment(request, order)
+                if response_data.get('status') == 'SUCCESS':
+                    return redirect(response_data.get('GatewayPageURL'))
+                else:
+                    messages.error(request, "Payment gateway redirection failed. Created as COD.")
+                    return render(request, 'shop/payment_success.html', {'order': order})
     else:
-        messages.error(request, 'Payment gateway error. Please Try again.')
-        return redirect('checkout')
+        form = CheckoutForm(initial={
+            'first_name': request.user.first_name,
+            'last_name': request.user.last_name,
+            'email': request.user.email,
+        })
+        
+    return render(request, 'shop/checkout.html', {'form': form, 'cart': cart_obj})
         
 @csrf_exempt
 @login_required

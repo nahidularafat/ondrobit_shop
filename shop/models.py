@@ -16,13 +16,12 @@ class category(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=100, unique=True)
-    category = models.ForeignKey(category, on_delete=models.CASCADE,related_name='products' )
+    category = models.ForeignKey(category, on_delete=models.CASCADE, related_name='products')
     description = models.TextField(blank=True, null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    discount_percentage = models.PositiveIntegerField(default=0, help_text="Discount in percentage (e.g. 10 for 10%)") # নতুন ফিল্ড
     stock = models.PositiveBigIntegerField(default=0)
-    
     available = models.BooleanField(default=True)
-    
     created = models.DateTimeField(auto_now_add=True)   
     updated = models.DateTimeField(auto_now=True)   
     image = models.ImageField(upload_to='products/%Y/%m/%d', blank=True, null=True)
@@ -30,11 +29,16 @@ class Product(models.Model):
     def __str__(self):
         return self.name
         
+    @property
+    def current_price(self):
+        """ডিসকাউন্ট হিসাব করে বর্তমান মূল্য রিটার্ন করবে"""
+        if self.discount_percentage > 0:
+            discount_amount = (self.price * self.discount_percentage) / 100
+            return self.price - discount_amount
+        return self.price
+
     def average_rating(self):
-        ratings = self.ratings.all()
-        if ratings:
-            return sum(r.rating for r in ratings) / ratings.count()
-        return 0
+        return self.ratings.aggregate(Avg('rating'))['rating__avg'] or 0
 
 class Rating(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ratings')
@@ -74,22 +78,27 @@ class CartItem(models.Model):
 
     def get_cost(self):
         return self.product.price * self.quantity          
-
 class Order(models.Model):
     STATUS_CHOICES = (
         ('Pending', 'Pending'),
         ('Processing', 'Processing'),
-        ('Shipped', 'Shipped'),
         ('Delivered', 'Delivered'),
         ('Cancelled', 'Cancelled'),
     )
+    PAYMENT_METHOD_CHOICES = (
+        ('COD', 'Cash on Delivery'),
+        ('SSLCOMMERZ', 'Online Payment (SSLCommerz)'),
+    ) # নতুন অপশন
+    
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField()
+    phone = models.CharField(max_length=15, default="") # নতুন ফিল্ড
     address = models.CharField(max_length=255)
     city = models.CharField(max_length=100)
     postal_code = models.CharField(max_length=20)
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHOD_CHOICES, default='COD') # নতুন ফিল্ড
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
     note = models.TextField(blank=True, null=True)
     paid = models.BooleanField(default=False)
@@ -104,8 +113,8 @@ class Order(models.Model):
         ordering = ['-created']           
 
     def get_total_cost(self):
-        return sum(item.get_cost() for item in self.items.all())    
-
+        return sum(item.get_cost() for item in self.items.all())
+    
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)

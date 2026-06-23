@@ -200,6 +200,11 @@
         padding: 3px 8px;
         border-radius: 2px;
         text-transform: uppercase;
+        z-index: 2;
+    }
+    /* Discount Custom Badge Style */
+    .product-badge.discount-badge {
+        background: #dc2626; /* Crimson Red */
     }
     .product-body { padding: 0.9rem; flex: 1; display: flex; flex-direction: column; }
     .product-cat {
@@ -227,6 +232,9 @@
     .rating i { color: var(--accent); font-size: 12px; }
     .product-price { font-size: 1.25rem; font-weight: 700; color: var(--price); }
     .product-price::before { content: '৳'; font-size: 0.75em; vertical-align: top; margin-right: 1px; }
+    .old-price { font-size: 0.9rem; color: var(--muted); text-decoration: line-through; margin-left: 6px; }
+    .old-price::before { content: '৳'; font-size: 0.85em; vertical-align: top; }
+    
     .product-footer { padding: 0 0.9rem 0.9rem; }
     .btn-cart {
         width: 100%;
@@ -460,7 +468,7 @@
                             {% for i in "12345" %}
                                 {% if forloop.counter <= product.average_rating %}
                                     <i class="fas fa-star"></i>
-                                {% else %}
+                                Loop{% else %}
                                     <i class="far fa-star"></i>
                                 {% endif %}
                             {% endfor %}
@@ -487,6 +495,79 @@
             <div class="col-12 text-center py-5 bg-white rounded-3 border">
                 <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
                 <h4 class="text-muted">No products yet — check back soon.</h4>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- ── DISCOUNTED PRODUCTS (NEW) ── -->
+    <div class="section-card">
+        <div class="d-flex justify-content-between align-items-end mb-3">
+            <div>
+                <span class="section-eyebrow">Big Savings</span>
+                <h2 class="section-title">Special Offers & Discounts</h2>
+            </div>
+            <a href="{% url 'product_list' %}" class="section-link">See more deals</a>
+        </div>
+
+        <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
+            {% for product in discounted_products %}
+            <div class="col">
+                <div class="product-card">
+                    <a href="{% url 'product_detail' product.slug %}" class="text-decoration-none">
+                        <div class="product-img-wrap">
+                            <!-- Discount Percentage Badge -->
+                            {% if product.discount_percentage %}
+                                <span class="product-badge discount-badge">{{ product.discount_percentage }}% OFF</span>
+                            {% else %}
+                                <span class="product-badge discount-badge">SALE</span>
+                            {% endif %}
+                            
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" class="product-img" alt="{{ product.name }}">
+                            {% else %}
+                                <i class="fas fa-image fa-3x text-muted"></i>
+                            {% endif %}
+                        </div>
+                    </a>
+                    <div class="product-body">
+                        <div class="product-cat">{{ product.category.name }}</div>
+                        <a href="{% url 'product_detail' product.slug %}" class="product-name d-block">{{ product.name }}</a>
+                        <div class="rating mb-2">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= product.average_rating %}
+                                    <i class="fas fa-star"></i>
+                                {% else %}
+                                    <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <div class="mt-auto">
+                            <!-- Current Price -->
+                            <span class="product-price">{{ product.price }}</span>
+                            <!-- Old Price (Strikethrough) -->
+                            {% if product.old_price %}
+                                <span class="old-price">{{ product.old_price }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="product-footer">
+                        {% if product.stock > 0 %}
+                            <form action="{% url 'cart_add' product.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-cart">
+                                    <i class="fas fa-cart-plus"></i> Add to Cart
+                                </button>
+                            </form>
+                        {% else %}
+                            <button class="btn-cart-disabled" disabled>Out of Stock</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-4 text-muted">
+                No discount offers available at this moment.
             </div>
             {% endfor %}
         </div>

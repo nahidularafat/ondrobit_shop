@@ -24,9 +24,22 @@ class RatingForm(forms.ModelForm):
 
 
 class CheckoutForm(forms.ModelForm):
+    payment_method = forms.ChoiceField(
+        choices=Order.PAYMENT_METHOD_CHOICES, 
+        widget=forms.RadioSelect, 
+        initial='COD'
+    )
+
     class Meta:
         model = Order
-        fields = ['first_name', 'last_name', 'email', 'address' ,'postal_code','city','note']   
+        fields = ['first_name', 'last_name', 'email', 'phone', 'address', 'postal_code', 'city', 'payment_method', 'note']   
         widgets = {
-            'note': forms.Textarea(attrs={'rows': 3}),
-        }     
+            'note': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Optional notes about your delivery...'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailField().widget.attrs.update({'class': 'form-control'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '01XXXXXXXXX'}),
+            'address': forms.TextInput(attrs={'class': 'form-control'}),
+            'postal_code': forms.TextInput(attrs={'class': 'form-control'}),
+            'city': forms.TextInput(attrs={'class': 'form-control'}),
+        }
