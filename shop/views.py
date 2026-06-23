@@ -189,6 +189,7 @@ def cart_remove(request, product_id):
 
 
 # --- Checkout & Payment Views ---
+@csrf_exempt
 @login_required
 def checkout(request):
     try:

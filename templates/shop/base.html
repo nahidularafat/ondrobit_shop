@@ -33,8 +33,7 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-
-    <!-- Navbar -->
+<!-- Navbar -->
 <nav class="navbar navbar-expand-lg sticky-top bg-white" style="border-bottom: 1px solid rgba(0,0,0,0.08);">
     <div class="container d-flex align-items-center flex-wrap py-0">
 
@@ -57,12 +56,21 @@
                 <li class="nav-item">
                     <a class="nav-link px-3 py-2 rounded-2" href="{% url 'product_list' %}" style="font-size:14px;color:#555;">All Products</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link px-3 py-2 rounded-2" href="#" style="font-size:14px;color:#555;">Best Selling</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-3 py-2 rounded-2" href="#" style="font-size:14px;color:#555;">About Us</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-3 py-2 rounded-2" href="#" style="font-size:14px;color:#555;">Contact Us</a>
+                </li>
             </ul>
 
             <!-- Desktop Search -->
             <form class="d-none d-lg-flex align-items-center gap-2 me-3 px-3 rounded-2"
                   action="{% url 'product_list' %}" method="GET"
-                  style="background:#f5f5f5;border:1px solid rgba(0,0,0,0.09);height:38px;width:240px;">
+                  style="background:#f5f5f5;border:1px solid rgba(0,0,0,0.09);height:38px;width:220px;">
                 <i class="fas fa-search text-muted" style="font-size:13px;"></i>
                 <input class="border-0 bg-transparent p-0 w-100" type="search" name="search"
                        placeholder="Search products..." style="font-size:13.5px;outline:none;color:#333;" />
@@ -177,8 +185,17 @@
             <a href="{% url 'home' %}" class="d-flex align-items-center gap-3 px-2 py-2 rounded-2 text-decoration-none text-dark mb-1" style="font-size:14px;">
                 <i class="fas fa-home text-muted" style="width:18px;text-align:center;font-size:15px;"></i> Home
             </a>
-            <a href="{% url 'product_list' %}" class="d-flex align-items-center gap-3 px-2 py-2 rounded-2 text-decoration-none text-dark mb-2" style="font-size:14px;">
+            <a href="{% url 'product_list' %}" class="d-flex align-items-center gap-3 px-2 py-2 rounded-2 text-decoration-none text-dark mb-1" style="font-size:14px;">
                 <i class="fas fa-th-large text-muted" style="width:18px;text-align:center;font-size:14px;"></i> All Products
+            </a>
+            <a href="#" class="d-flex align-items-center gap-3 px-2 py-2 rounded-2 text-decoration-none text-dark mb-1" style="font-size:14px;">
+                <i class="fas fa-fire text-muted" style="width:18px;text-align:center;font-size:14px;"></i> Best Selling Products
+            </a>
+            <a href="#" class="d-flex align-items-center gap-3 px-2 py-2 rounded-2 text-decoration-none text-dark mb-1" style="font-size:14px;">
+                <i class="fas fa-info-circle text-muted" style="width:18px;text-align:center;font-size:14px;"></i> About Us
+            </a>
+            <a href="#" class="d-flex align-items-center gap-3 px-2 py-2 rounded-2 text-decoration-none text-dark mb-2" style="font-size:14px;">
+                <i class="fas fa-envelope text-muted" style="width:18px;text-align:center;font-size:14px;"></i> Contact Us
             </a>
 
             {% if user.is_authenticated %}
