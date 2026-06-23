@@ -12,34 +12,39 @@ class category(models.Model):
         
     def __str__(self):
         return self.name
-
 class Product(models.Model):
+    # ... আপনার আগের সব ফিল্ড থাকবে ...
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=100, unique=True)
     category = models.ForeignKey(category, on_delete=models.CASCADE, related_name='products')
     description = models.TextField(blank=True, null=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    discount_percentage = models.PositiveIntegerField(default=0, help_text="Discount in percentage (e.g. 10 for 10%)") # নতুন ফিল্ড
+    price = models.DecimalField(max_digits=10, decimal_places=2) # এটি আসল দাম (Original Price)
     stock = models.PositiveBigIntegerField(default=0)
     available = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)   
     updated = models.DateTimeField(auto_now=True)   
     image = models.ImageField(upload_to='products/%Y/%m/%d', blank=True, null=True)
+    
+    # ১. ডিসকাউন্ট পার্সেন্টেজ ফিল্ড (যদি অলরেডি মাইগ্রেশন করা থাকে তবে ঠিক আছে, না থাকলে এটি লিখুন)
+    discount_percentage = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
 
     def __str__(self):
         return self.name
         
+    def average_rating(self):
+        ratings = self.ratings.all()
+        if ratings:
+            return sum(r.rating for r in ratings) / ratings.count()
+        return 0
+
+    # ২. ডিসকাউন্ট বাদ দিয়ে বর্তমান বিক্রয়মূল্য বের করার প্রোপার্টি
     @property
-    def current_price(self):
-        """ডিসকাউন্ট হিসাব করে বর্তমান মূল্য রিটার্ন করবে"""
+    def discounted_price(self):
         if self.discount_percentage > 0:
             discount_amount = (self.price * self.discount_percentage) / 100
             return self.price - discount_amount
         return self.price
-
-    def average_rating(self):
-        return self.ratings.aggregate(Avg('rating'))['rating__avg'] or 0
-
+    
 class Rating(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ratings')
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
@@ -67,7 +72,6 @@ class cart(models.Model):
         
     def get_total_items(self):
         return sum(item.quantity for item in self.items.all())
-
 class CartItem(models.Model):
     cart = models.ForeignKey(cart, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -76,14 +80,18 @@ class CartItem(models.Model):
     def __str__(self):
         return f'{self.quantity} x {self.product.name}'  
 
+    # ৩. কার্ট আইটেমের খরচ আসল দামের বদলে ডিসকাউন্টেড প্রাইস দিয়ে গুণ হবে
     def get_cost(self):
-        return self.product.price * self.quantity          
+        return self.product.discounted_price * self.quantity
+    
+          
 class Order(models.Model):
     STATUS_CHOICES = (
         ('Pending', 'Pending'),
         ('Processing', 'Processing'),
         ('Delivered', 'Delivered'),
         ('Cancelled', 'Cancelled'),
+        ('Failed', 'Failed'),
     )
     PAYMENT_METHOD_CHOICES = (
         ('COD', 'Cash on Delivery'),

@@ -451,9 +451,13 @@
                 <div class="product-card">
                     <a href="{% url 'product_detail' product.slug %}" class="text-decoration-none">
                         <div class="product-img-wrap">
-                            {% if product.stock <= 3 and product.stock > 0 %}
+                            <!-- Discount or stock badge alignment -->
+                            {% if product.old_price and product.old_price > product.price %}
+                                <span class="product-badge discount-badge">SALE</span>
+                            {% elif product.stock <= 3 and product.stock > 0 %}
                                 <span class="product-badge">Only {{ product.stock }} left</span>
                             {% endif %}
+                            
                             {% if product.image %}
                                 <img src="{{ product.image.url }}" class="product-img" alt="{{ product.name }}">
                             {% else %}
@@ -468,13 +472,16 @@
                             {% for i in "12345" %}
                                 {% if forloop.counter <= product.average_rating %}
                                     <i class="fas fa-star"></i>
-                                Loop{% else %}
+                                {% else %}
                                     <i class="far fa-star"></i>
                                 {% endif %}
                             {% endfor %}
                         </div>
                         <div class="mt-auto">
-                            <span class="product-price">{{ product.price }}</span>
+                            <span class="product-price">{{ product.price }}  {{ item.get_cost }}</span>
+                            {% if product.old_price and product.old_price > product.price %}
+                                <span class="old-price">{{ product.old_price }}</span>
+                            {% endif %}
                         </div>
                     </div>
                     <div class="product-footer">

@@ -130,7 +130,6 @@
 {% endblock %}
 
 {% block content %}
-<!-- Breadcrumb -->
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a></li>
@@ -140,9 +139,7 @@
     </ol>
 </nav>
 
-<!-- Main Product Details Area -->
 <div class="row g-4 mb-5">
-    <!-- Product Image -->
     <div class="col-md-5 col-lg-5">
         <div class="product-img-wrapper">
             {% if product.image %}
@@ -153,7 +150,6 @@
         </div>
     </div>
     
-    <!-- Product Info -->
     <div class="col-md-7 col-lg-7">
         <div class="product-info-wrapper">
             <div class="mb-2">
@@ -191,7 +187,6 @@
                 {% endif %}
             </div>
             
-            <!-- Add to Cart Action -->
             <div class="mt-auto">
                 {% if product.stock > 0 %}
                     <form action="{% url 'cart_add' product.id %}" method="post">
@@ -210,7 +205,6 @@
     </div>
 </div>
 
-<!-- Tabs Section (Description & Reviews) -->
 <div class="row mb-5">
     <div class="col-12">
         <div class="bg-white rounded p-4 shadow-sm">
@@ -228,16 +222,13 @@
             </ul>
             
             <div class="tab-content pt-3" id="productTabsContent">
-                <!-- Description Tab -->
                 <div class="tab-pane fade show active" id="desc" role="tabpanel">
                     <h5 class="fw-bold mb-3">Product Information</h5>
                     <p class="text-muted" style="line-height: 1.8; white-space: pre-wrap;">{{ product.description }}</p>
                 </div>
                 
-                <!-- Reviews Tab -->
                 <div class="tab-pane fade" id="reviews" role="tabpanel">
                     <div class="row">
-                        <!-- Left Side: All Reviews -->
                         <div class="col-md-8">
                             <h5 class="fw-bold mb-4">Customer Reviews</h5>
                             {% if product.ratings.count > 0 %}
@@ -269,13 +260,12 @@
                             {% else %}
                                 <div class="alert alert-light text-center p-4">
                                     <i class="far fa-comment-dots fa-3x text-muted mb-3"></i>
-                                    <h6>No reviews yet.</h6>
+                                    <h6 class="fw-bold">No reviews yet.</h6>
                                     <p class="text-muted mb-0">Be the first to review this product!</p>
                                 </div>
                             {% endif %}
                         </div>
                         
-                        <!-- Right Side: User's Review Area -->
                         <div class="col-md-4">
                             <div class="bg-light p-4 rounded mt-4 mt-md-0">
                                 {% if user.is_authenticated %}
@@ -291,15 +281,43 @@
                                             {% endfor %}
                                         </div>
                                         <p class="text-muted small mb-3">"{{ user_rating.comment }}"</p>
-                                        <a href="{% url 'rate_product' product.id %}" class="btn btn-outline-primary w-100 rounded-pill">
+                                        
+                                        <button class="btn btn-outline-primary w-100 rounded-pill mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#editReviewForm" aria-expanded="false" aria-controls="editReviewForm">
                                             <i class="fas fa-edit me-1"></i> Edit Review
-                                        </a>
+                                        </button>
+                                        
+                                        <div class="collapse" id="editReviewForm">
+                                            <form action="{% url 'rate_product' product.id %}" method="post" class="bg-white p-3 rounded shadow-sm">
+                                                {% csrf_token %}
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold small text-muted">Rating (1-5):</label>
+                                                    <input type="number" name="rating" value="{{ user_rating.rating }}" min="1" max="5" class="form-control form-control-sm" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold small text-muted">Comment:</label>
+                                                    <textarea name="comment" rows="3" class="form-control form-control-sm" required>{{ user_rating.comment }}</textarea>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary btn-sm w-100 rounded-pill fw-bold">Update Review</button>
+                                            </form>
+                                        </div>
                                     {% else %}
                                         <h5 class="fw-bold mb-3">Share Your Thoughts</h5>
-                                        <p class="text-muted small mb-4">Have you purchased this product? Let others know what you think.</p>
-                                        <a href="{% url 'rate_product' product.id %}" class="btn btn-primary w-100 rounded-pill fw-bold">
-                                            <i class="fas fa-star me-1"></i> Write a Review
-                                        </a>
+                                        <p class="text-muted small mb-3">Have you purchased this product? Let others know what you think.</p>
+                                        
+                                        <form action="{% url 'rate_product' product.id %}" method="post" class="bg-white p-3 rounded shadow-sm">
+                                            {% csrf_token %}
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold small text-muted">Rating (1-5):</label>
+                                                <input type="number" name="rating" min="1" max="5" class="form-control form-control-sm" placeholder="e.g. 5" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold small text-muted">Comment:</label>
+                                                <textarea name="comment" rows="3" class="form-control form-control-sm" placeholder="Write your review here..." required></textarea>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary btn-sm w-100 rounded-pill fw-bold">
+                                                <i class="fas fa-star me-1"></i> Submit Review
+                                            </button>
+                                        </form>
                                     {% endif %}
                                 {% else %}
                                     <h5 class="fw-bold mb-3">Rate this product</h5>
@@ -317,7 +335,6 @@
     </div>
 </div>
 
-<!-- Related Products Section -->
 {% if related_products %}
 <div class="mb-5">
     <h3 class="fw-bold mb-4 border-bottom pb-2">Related Products</h3>
