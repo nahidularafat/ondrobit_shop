@@ -1,161 +1,132 @@
 {% extends 'shop/base.html' %}
 
 {% block title %}
-    {% if category %}{{ category.name }}{% else %}All Products{% endif %} | Ondrobit E-Shop
+    {% if category %}{{ category.name }}{% else %}All Products{% endif %} | Ondrobit Shop
 {% endblock %}
 
 {% block extra_css %}
 <style>
-    /* Related Products Style (used for product grid) */
+    /* Sidebar Filter Styling */
+    .filter-card {
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        background: white;
+    }
+    .filter-title { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+    
+    /* Product Card Styling */
     .product-card {
         border: none;
-        border-radius: var(--border-radius);
-        box-shadow: var(--box-shadow);
+        border-radius: 8px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         transition: transform 0.3s ease;
         height: 100%;
-        display: flex;
-        flex-direction: column;
-        background-color: white;
     }
-    .product-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    }
+    .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
     .product-img-container {
         height: 200px;
-        background-color: var(--bg-light);
+        background-color: #f8fafc;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-top-left-radius: var(--border-radius);
-        border-top-right-radius: var(--border-radius);
         overflow: hidden;
+        border-radius: 8px 8px 0 0;
     }
-    .product-img {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: cover;
-    }
-    .breadcrumb {
-        background-color: transparent;
-        padding: 0;
-        margin-bottom: 2rem;
-    }
-    .breadcrumb-item a {
-        color: var(--primary-color);
-        text-decoration: none;
-        font-weight: 500;
-    }
-    .breadcrumb-item.active {
-        color: var(--text-light);
-    }
+    .product-img { max-width: 100%; max-height: 100%; object-fit: cover; }
 </style>
 {% endblock %}
 
 {% block content %}
-<nav aria-label="breadcrumb" class="mt-3">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a></li>
-        {% if category %}
-            <li class="breadcrumb-item"><a href="{% url 'product_list' %}">Products</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{ category.name }}</li>
-        {% else %}
-            <li class="breadcrumb-item active" aria-current="page">Products</li>
-        {% endif %}
-    </ol>
-</nav>
-
-<div class="row g-4 mb-5">
+<div class="row g-4">
+    <!-- Sidebar Filters -->
     <div class="col-md-3">
-        <div class="card mb-4 shadow-sm border-0">
-            <div class="card-header bg-primary text-white border-0">
-                <h5 class="mb-0"><i class="fas fa-list"></i> Categories</h5>
-            </div>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item {% if not category %}bg-light{% endif %}">
-                    <a href="{% url 'product_list' %}" class="text-decoration-none {% if not category %}fw-bold text-primary{% else %}text-dark{% endif %}">
-                        All Products
+        <div class="filter-card p-4">
+            <h5 class="filter-title mb-4"><i class="fas fa-filter me-2"></i> Filter Products</h5>
+            
+            <!-- Categories -->
+            <h6 class="fw-bold mb-3">Categories</h6>
+            <ul class="list-unstyled mb-4">
+                <li class="mb-2">
+                    <a href="{% url 'product_list' %}" class="text-decoration-none {% if not category %}text-primary fw-bold{% else %}text-dark{% endif %}">
+                        <i class="fas fa-layer-group me-2"></i> All Categories
                     </a>
                 </li>
                 {% for c in categories %}
-                <li class="list-group-item {% if category.slug == c.slug %}bg-light{% endif %}">
-                    <a href="{% url 'product_list_by_category' c.slug %}" class="text-decoration-none {% if category.slug == c.slug %}fw-bold text-primary{% else %}text-dark{% endif %}">
-                        {{ c.name }}
+                <li class="mb-2">
+                    <a href="{% url 'product_list_by_category' c.slug %}" class="text-decoration-none {% if category.slug == c.slug %}text-primary fw-bold{% else %}text-dark{% endif %}">
+                        <i class="fas fa-chevron-right me-2 fa-sm"></i> {{ c.name }}
                     </a>
                 </li>
                 {% endfor %}
             </ul>
+
+            <hr>
+
+            <!-- Price & Rating Filter Form -->
+            <form method="GET">
+                <div class="mb-3">
+                    <label class="small fw-bold">Price Range</label>
+                    <div class="d-flex gap-2 align-items-center mt-1">
+                        <input type="number" name="min_price" class="form-control form-control-sm" placeholder="Min" value="{{ request.GET.min_price }}">
+                        <input type="number" name="max_price" class="form-control form-control-sm" placeholder="Max" value="{{ request.GET.max_price }}">
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="small fw-bold">Rating</label>
+                    <select name="min_rating" class="form-select form-select-sm mt-1">
+                        <option value="">Any Rating</option>
+                        <option value="4" {% if request.GET.min_rating == '4' %}selected{% endif %}>4+ Stars</option>
+                        <option value="3" {% if request.GET.min_rating == '3' %}selected{% endif %}>3+ Stars</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn btn-primary w-100 btn-sm mb-2"><i class="fas fa-search me-1"></i> Apply Filters</button>
+                <a href="{% url 'product_list' %}" class="btn btn-outline-secondary w-100 btn-sm"><i class="fas fa-undo me-1"></i> Reset Filters</a>
+            </form>
         </div>
     </div>
 
+    <!-- Product Grid -->
     <div class="col-md-9">
-        <h3 class="fw-bold mb-4 border-bottom pb-2">
-            {% if category %}{{ category.name }}{% else %}All Products{% endif %}
-        </h3>
+        <h3 class="fw-bold mb-4">{% if category %}{{ category.name }}{% else %}All Products{% endif %}</h3>
         
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
             {% for product in products %}
             <div class="col">
                 <div class="card product-card">
-                    
-                    <a href="{{ product.get_absolute_url }}" class="text-decoration-none">
+                    <a href="{{ product.get_absolute_url }}">
                         <div class="product-img-container">
                             {% if product.image %}
                                 <img src="{{ product.image.url }}" class="product-img" alt="{{ product.name }}">
                             {% else %}
-                                <i class="fas fa-image fa-4x text-muted" style="opacity: 0.3;"></i>
+                                <i class="fas fa-image fa-3x text-muted"></i>
                             {% endif %}
                         </div>
                     </a>
                     
-                    <div class="card-body d-flex flex-column text-center">
-                        <a href="{{ product.get_absolute_url }}" class="text-decoration-none text-dark">
-                            <h5 class="fw-bold mb-2 text-truncate" title="{{ product.name }}">{{ product.name }}</h5>
-                        </a>
-                        <p class="card-text text-muted small mb-2">{{ product.category.name }}</p>
+                    <div class="card-body text-center">
+                        <h6 class="fw-bold text-truncate">{{ product.name }}</h6>
+                        <p class="text-primary fw-bold">৳ {{ product.price }}</p>
                         
-                        <div class="text-warning mb-2 small">
-                            {% for i in "12345" %}
-                                {% if forloop.counter <= product.average_rating|default:0 %}
-                                    <i class="fas fa-star"></i>
-                                {% else %}
-                                    <i class="far fa-star"></i>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-
-                        <div class="text-primary fw-bold fs-5 mb-3">৳ {{ product.price }}</div>
-                        
-                        <div class="mt-auto">
-                            {% if product.stock > 0 %}
-                                <form action="{% url 'cart_add' product.id %}" method="post">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-outline-primary w-100 rounded-pill fw-bold">
-                                        <i class="fas fa-cart-plus me-1"></i> Add to Cart
-                                    </button>
-                                </form>
-                            {% else %}
-                                <button class="btn btn-outline-danger w-100 rounded-pill" disabled>
-                                    <i class="fas fa-times-circle me-1"></i> Out of Stock
-                                </button>
-                            {% endif %}
-                        </div>
+                        {% if product.stock > 0 %}
+                            <form action="{% url 'cart_add' product.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill w-100">Add to Cart</button>
+                            </form>
+                        {% else %}
+                            <button class="btn btn-outline-secondary btn-sm rounded-pill w-100" disabled>Out of Stock</button>
+                        {% endif %}
                     </div>
-
                 </div>
             </div>
-            
             {% empty %}
-            <div class="col-12">
-                <div class="alert alert-warning text-center py-5 border-0 shadow-sm" role="alert">
-                    <i class="fas fa-box-open fa-3x mb-3 text-muted"></i>
-                    <h4>No products found!</h4>
-                    <p class="mb-0">{% if category %}There are currently no products in the "{{ category.name }}" category.{% else %}No products have been added yet.{% endif %}</p>
-                </div>
+            <div class="col-12 text-center py-5">
+                <h5 class="text-muted">No products found matching your criteria.</h5>
             </div>
             {% endfor %}
         </div>
-        
     </div>
 </div>
 {% endblock %}
