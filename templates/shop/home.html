@@ -202,10 +202,6 @@
         text-transform: uppercase;
         z-index: 2;
     }
-    /* Discount Custom Badge Style */
-    .product-badge.discount-badge {
-        background: #dc2626; /* Crimson Red */
-    }
     .product-body { padding: 0.9rem; flex: 1; display: flex; flex-direction: column; }
     .product-cat {
         font-size: 10.5px;
@@ -330,6 +326,51 @@
     }
     .btn-subscribe:hover { background: var(--brand-2); }
 
+    /* ── HORIZONTAL SCROLL (SWIPE) ── */
+    .horizontal-scroll {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: 1rem;
+        padding-bottom: 1rem;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch; /* স্মুথ সোয়াইপ এর জন্য */
+    }
+    
+    /* স্ক্রলবার হাইড করার জন্য */
+    .horizontal-scroll::-webkit-scrollbar {
+        display: none;
+    }
+    .horizontal-scroll {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    /* সোয়াইপ কার্ডের সাইজ (মোবাইলে ২টি, ট্যাবে ৩টি, পিসিতে ৫টি দেখাবে) */
+    .horizontal-scroll .scroll-item {
+        flex: 0 0 calc(50% - 0.5rem);
+        scroll-snap-align: start;
+    }
+    @media (min-width: 576px) { .horizontal-scroll .scroll-item { flex: 0 0 calc(33.333% - 0.66rem); } }
+    @media (min-width: 768px) { .horizontal-scroll .scroll-item { flex: 0 0 calc(25% - 0.75rem); } }
+    @media (min-width: 992px) { .horizontal-scroll .scroll-item { flex: 0 0 calc(20% - 0.8rem); } }
+
+    /* প্রাইস এবং ডিসকাউন্টের স্টাইল */
+    .price-wrapper {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+    .discount-inline-badge {
+        background: #dc2626;
+        color: white;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 6px;
+        border-radius: 3px;
+    }
+
     @media (max-width: 768px) {
         .hero { padding: 1.8rem 1.2rem; }
         .hero-stats { gap: 16px; }
@@ -445,16 +486,13 @@
             <a href="{% url 'product_list' %}" class="section-link">View all</a>
         </div>
 
-        <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
+        <div class="horizontal-scroll">
             {% for product in featured_products %}
-            <div class="col">
+            <div class="scroll-item">
                 <div class="product-card">
                     <a href="{% url 'product_detail' product.slug %}" class="text-decoration-none">
                         <div class="product-img-wrap">
-                            <!-- Discount or stock badge alignment -->
-                            {% if product.old_price and product.old_price > product.price %}
-                                <span class="product-badge discount-badge">SALE</span>
-                            {% elif product.stock <= 3 and product.stock > 0 %}
+                            {% if product.stock <= 3 and product.stock > 0 %}
                                 <span class="product-badge">Only {{ product.stock }} left</span>
                             {% endif %}
                             
@@ -478,10 +516,14 @@
                             {% endfor %}
                         </div>
                         <div class="mt-auto">
-                            <span class="product-price">{{ product.price }}  {{ item.get_cost }}</span>
-                            {% if product.old_price and product.old_price > product.price %}
-                                <span class="old-price">{{ product.old_price }}</span>
-                            {% endif %}
+                            <!-- রিয়েল প্রাইস এবং ডিসকাউন্ট পাশাপাশি -->
+                            <div class="price-wrapper">
+                                <span class="product-price">{{ product.discounted_price }}</span>
+                                {% if product.discount_percentage > 0 %}
+                                    <span class="old-price">{{ product.price }}</span>
+                                    <span class="discount-inline-badge">-{{ product.discount_percentage }}%</span>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                     <div class="product-footer">
@@ -499,7 +541,7 @@
                 </div>
             </div>
             {% empty %}
-            <div class="col-12 text-center py-5 bg-white rounded-3 border">
+            <div class="col-12 text-center py-5 bg-white rounded-3 border w-100">
                 <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
                 <h4 class="text-muted">No products yet — check back soon.</h4>
             </div>
@@ -517,19 +559,12 @@
             <a href="{% url 'product_list' %}" class="section-link">See more deals</a>
         </div>
 
-        <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
+        <div class="horizontal-scroll">
             {% for product in discounted_products %}
-            <div class="col">
+            <div class="scroll-item">
                 <div class="product-card">
                     <a href="{% url 'product_detail' product.slug %}" class="text-decoration-none">
                         <div class="product-img-wrap">
-                            <!-- Discount Percentage Badge -->
-                            {% if product.discount_percentage %}
-                                <span class="product-badge discount-badge">{{ product.discount_percentage }}% OFF</span>
-                            {% else %}
-                                <span class="product-badge discount-badge">SALE</span>
-                            {% endif %}
-                            
                             {% if product.image %}
                                 <img src="{{ product.image.url }}" class="product-img" alt="{{ product.name }}">
                             {% else %}
@@ -550,12 +585,14 @@
                             {% endfor %}
                         </div>
                         <div class="mt-auto">
-                            <!-- Current Price -->
-                            <span class="product-price">{{ product.price }}</span>
-                            <!-- Old Price (Strikethrough) -->
-                            {% if product.old_price %}
-                                <span class="old-price">{{ product.old_price }}</span>
-                            {% endif %}
+                            <!-- রিয়েল প্রাইস এবং ডিসকাউন্ট পাশাপাশি -->
+                            <div class="price-wrapper">
+                                <span class="product-price">{{ product.discounted_price }}</span>
+                                {% if product.discount_percentage > 0 %}
+                                    <span class="old-price">{{ product.price }}</span>
+                                    <span class="discount-inline-badge">-{{ product.discount_percentage }}%</span>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                     <div class="product-footer">
@@ -573,7 +610,7 @@
                 </div>
             </div>
             {% empty %}
-            <div class="col-12 text-center py-4 text-muted">
+            <div class="col-12 text-center py-4 text-muted w-100">
                 No discount offers available at this moment.
             </div>
             {% endfor %}
