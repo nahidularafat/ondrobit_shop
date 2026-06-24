@@ -5,6 +5,16 @@ from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q, Min, Max, Avg
 
+
+
+from django.shortcuts import render
+
+def custom_404(request, exception):
+    return render(request, "404.html", status=404)
+
+def custom_500(request):
+    return render(request, "shop/500.html", status=500)
+
 # আপনার মডেলগুলো 
 try:
     from .models import Category, Product, cart, CartItem, Order, OrderItem, Rating
@@ -324,7 +334,8 @@ def payment_cancel(request, order_id):
     messages.warning(request, 'Payment cancelled.')
     return redirect('checkout')
 
-
+def custom_404(request, exception):
+    return render(request, "404.html", status=404)
 # --- User Profile ---
 @login_required
 def profile(request):

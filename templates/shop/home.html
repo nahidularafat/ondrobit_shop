@@ -326,6 +326,40 @@
     }
     .btn-subscribe:hover { background: var(--brand-2); }
 
+    /* ── CAROUSEL BUTTONS (NEW) ── */
+    .carousel-wrapper {
+        position: relative;
+    }
+    .carousel-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 40px;
+        height: 40px;
+        background: var(--surface);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 50%;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 10;
+        transition: all 0.2s ease;
+    }
+    .carousel-btn:hover {
+        background: var(--brand);
+        color: #fff;
+        border-color: var(--brand);
+    }
+    .carousel-btn.left-btn {
+        left: -15px;
+    }
+    .carousel-btn.right-btn {
+        right: -15px;
+    }
+
     /* ── HORIZONTAL SCROLL (SWIPE) ── */
     .horizontal-scroll {
         display: flex;
@@ -380,6 +414,8 @@
         .newsletter { padding: 1.4rem 1rem; }
         .product-img-wrap { height: 150px; }
         .hero-title { font-size: clamp(1.5rem, 6vw, 2.1rem); }
+        /* মোবাইলে বাটন হাইড রাখতে চাইলে নিচের কোডটি আনকমেন্ট করতে পারেন */
+        /* .carousel-btn { display: none; } */
     }
 </style>
 {% endblock %}
@@ -486,66 +522,72 @@
             <a href="{% url 'product_list' %}" class="section-link">View all</a>
         </div>
 
-        <div class="horizontal-scroll">
-            {% for product in featured_products %}
-            <div class="scroll-item">
-                <div class="product-card">
-                    <a href="{% url 'product_detail' product.slug %}" class="text-decoration-none">
-                        <div class="product-img-wrap">
-                            {% if product.stock <= 3 and product.stock > 0 %}
-                                <span class="product-badge">Only {{ product.stock }} left</span>
-                            {% endif %}
-                            
-                            {% if product.image %}
-                                <img src="{{ product.image.url }}" class="product-img" alt="{{ product.name }}">
-                            {% else %}
-                                <i class="fas fa-image fa-3x text-muted"></i>
-                            {% endif %}
-                        </div>
-                    </a>
-                    <div class="product-body">
-                        <div class="product-cat">{{ product.category.name }}</div>
-                        <a href="{% url 'product_detail' product.slug %}" class="product-name d-block">{{ product.name }}</a>
-                        <div class="rating mb-2">
-                            {% for i in "12345" %}
-                                {% if forloop.counter <= product.average_rating %}
-                                    <i class="fas fa-star"></i>
-                                {% else %}
-                                    <i class="far fa-star"></i>
+        <!-- Carousel Wrapper with Buttons -->
+        <div class="carousel-wrapper">
+            <button class="carousel-btn left-btn" onclick="scrollCarousel(this, -1)"><i class="fas fa-chevron-left"></i></button>
+            
+            <div class="horizontal-scroll">
+                {% for product in featured_products %}
+                <div class="scroll-item">
+                    <div class="product-card">
+                        <a href="{% url 'product_detail' product.slug %}" class="text-decoration-none">
+                            <div class="product-img-wrap">
+                                {% if product.stock <= 3 and product.stock > 0 %}
+                                    <span class="product-badge">Only {{ product.stock }} left</span>
                                 {% endif %}
-                            {% endfor %}
-                        </div>
-                        <div class="mt-auto">
-                            <!-- রিয়েল প্রাইস এবং ডিসকাউন্ট পাশাপাশি -->
-                            <div class="price-wrapper">
-                                <span class="product-price">{{ product.discounted_price }}</span>
-                                {% if product.discount_percentage > 0 %}
-                                    <span class="old-price">{{ product.price }}</span>
-                                    <span class="discount-inline-badge">-{{ product.discount_percentage }}%</span>
+                                
+                                {% if product.image %}
+                                    <img src="{{ product.image.url }}" class="product-img" alt="{{ product.name }}">
+                                {% else %}
+                                    <i class="fas fa-image fa-3x text-muted"></i>
                                 {% endif %}
                             </div>
+                        </a>
+                        <div class="product-body">
+                            <div class="product-cat">{{ product.category.name }}</div>
+                            <a href="{% url 'product_detail' product.slug %}" class="product-name d-block">{{ product.name }}</a>
+                            <div class="rating mb-2">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= product.average_rating %}
+                                        <i class="fas fa-star"></i>
+                                    {% else %}
+                                        <i class="far fa-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <div class="mt-auto">
+                                <div class="price-wrapper">
+                                    <span class="product-price">{{ product.discounted_price }}</span>
+                                    {% if product.discount_percentage > 0 %}
+                                        <span class="old-price">{{ product.price }}</span>
+                                        <span class="discount-inline-badge">-{{ product.discount_percentage }}%</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-footer">
+                            {% if product.stock > 0 %}
+                                <form action="{% url 'cart_add' product.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-cart">
+                                        <i class="fas fa-cart-plus"></i> Add to Cart
+                                    </button>
+                                </form>
+                            {% else %}
+                                <button class="btn-cart-disabled" disabled>Out of Stock</button>
+                            {% endif %}
                         </div>
                     </div>
-                    <div class="product-footer">
-                        {% if product.stock > 0 %}
-                            <form action="{% url 'cart_add' product.id %}" method="post">
-                                {% csrf_token %}
-                                <button type="submit" class="btn-cart">
-                                    <i class="fas fa-cart-plus"></i> Add to Cart
-                                </button>
-                            </form>
-                        {% else %}
-                            <button class="btn-cart-disabled" disabled>Out of Stock</button>
-                        {% endif %}
-                    </div>
                 </div>
+                {% empty %}
+                <div class="col-12 text-center py-5 bg-white rounded-3 border w-100">
+                    <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                    <h4 class="text-muted">No products yet — check back soon.</h4>
+                </div>
+                {% endfor %}
             </div>
-            {% empty %}
-            <div class="col-12 text-center py-5 bg-white rounded-3 border w-100">
-                <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
-                <h4 class="text-muted">No products yet — check back soon.</h4>
-            </div>
-            {% endfor %}
+            
+            <button class="carousel-btn right-btn" onclick="scrollCarousel(this, 1)"><i class="fas fa-chevron-right"></i></button>
         </div>
     </div>
 
@@ -559,61 +601,67 @@
             <a href="{% url 'product_list' %}" class="section-link">See more deals</a>
         </div>
 
-        <div class="horizontal-scroll">
-            {% for product in discounted_products %}
-            <div class="scroll-item">
-                <div class="product-card">
-                    <a href="{% url 'product_detail' product.slug %}" class="text-decoration-none">
-                        <div class="product-img-wrap">
-                            {% if product.image %}
-                                <img src="{{ product.image.url }}" class="product-img" alt="{{ product.name }}">
-                            {% else %}
-                                <i class="fas fa-image fa-3x text-muted"></i>
-                            {% endif %}
-                        </div>
-                    </a>
-                    <div class="product-body">
-                        <div class="product-cat">{{ product.category.name }}</div>
-                        <a href="{% url 'product_detail' product.slug %}" class="product-name d-block">{{ product.name }}</a>
-                        <div class="rating mb-2">
-                            {% for i in "12345" %}
-                                {% if forloop.counter <= product.average_rating %}
-                                    <i class="fas fa-star"></i>
+        <!-- Carousel Wrapper with Buttons -->
+        <div class="carousel-wrapper">
+            <button class="carousel-btn left-btn" onclick="scrollCarousel(this, -1)"><i class="fas fa-chevron-left"></i></button>
+
+            <div class="horizontal-scroll">
+                {% for product in discounted_products %}
+                <div class="scroll-item">
+                    <div class="product-card">
+                        <a href="{% url 'product_detail' product.slug %}" class="text-decoration-none">
+                            <div class="product-img-wrap">
+                                {% if product.image %}
+                                    <img src="{{ product.image.url }}" class="product-img" alt="{{ product.name }}">
                                 {% else %}
-                                    <i class="far fa-star"></i>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                        <div class="mt-auto">
-                            <!-- রিয়েল প্রাইস এবং ডিসকাউন্ট পাশাপাশি -->
-                            <div class="price-wrapper">
-                                <span class="product-price">{{ product.discounted_price }}</span>
-                                {% if product.discount_percentage > 0 %}
-                                    <span class="old-price">{{ product.price }}</span>
-                                    <span class="discount-inline-badge">-{{ product.discount_percentage }}%</span>
+                                    <i class="fas fa-image fa-3x text-muted"></i>
                                 {% endif %}
                             </div>
+                        </a>
+                        <div class="product-body">
+                            <div class="product-cat">{{ product.category.name }}</div>
+                            <a href="{% url 'product_detail' product.slug %}" class="product-name d-block">{{ product.name }}</a>
+                            <div class="rating mb-2">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= product.average_rating %}
+                                        <i class="fas fa-star"></i>
+                                    {% else %}
+                                        <i class="far fa-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <div class="mt-auto">
+                                <div class="price-wrapper">
+                                    <span class="product-price">{{ product.discounted_price }}</span>
+                                    {% if product.discount_percentage > 0 %}
+                                        <span class="old-price">{{ product.price }}</span>
+                                        <span class="discount-inline-badge">-{{ product.discount_percentage }}%</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-footer">
+                            {% if product.stock > 0 %}
+                                <form action="{% url 'cart_add' product.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-cart">
+                                        <i class="fas fa-cart-plus"></i> Add to Cart
+                                    </button>
+                                </form>
+                            {% else %}
+                                <button class="btn-cart-disabled" disabled>Out of Stock</button>
+                            {% endif %}
                         </div>
                     </div>
-                    <div class="product-footer">
-                        {% if product.stock > 0 %}
-                            <form action="{% url 'cart_add' product.id %}" method="post">
-                                {% csrf_token %}
-                                <button type="submit" class="btn-cart">
-                                    <i class="fas fa-cart-plus"></i> Add to Cart
-                                </button>
-                            </form>
-                        {% else %}
-                            <button class="btn-cart-disabled" disabled>Out of Stock</button>
-                        {% endif %}
-                    </div>
                 </div>
+                {% empty %}
+                <div class="col-12 text-center py-4 text-muted w-100">
+                    No discount offers available at this moment.
+                </div>
+                {% endfor %}
             </div>
-            {% empty %}
-            <div class="col-12 text-center py-4 text-muted w-100">
-                No discount offers available at this moment.
-            </div>
-            {% endfor %}
+
+            <button class="carousel-btn right-btn" onclick="scrollCarousel(this, 1)"><i class="fas fa-chevron-right"></i></button>
         </div>
     </div>
 
@@ -642,4 +690,32 @@
     </div>
 
 </div>
+
+<!-- ── CAROUSEL JAVASCRIPT ── -->
+<script>
+    function scrollCarousel(button, direction) {
+        // বাটনের প্যারেন্ট ইলিমেন্ট (carousel-wrapper) সিলেক্ট করা
+        const wrapper = button.parentElement;
+        
+        // ওই র্যাপারের ভেতরের horizontal-scroll ডিভটি বের করা
+        const scrollContainer = wrapper.querySelector('.horizontal-scroll');
+        
+        if(scrollContainer) {
+            // একটি কার্ডের সাইজ + গ্যাপ হিসেব করে স্ক্রল করার এমাউন্ট বের করা
+            const scrollItem = scrollContainer.querySelector('.scroll-item');
+            if (scrollItem) {
+                const itemWidth = scrollItem.offsetWidth;
+                const gap = 16; // 1rem gap
+                // প্রতি ক্লিকে ২ টি আইটেম করে স্ক্রল হবে, আপনি চাইলে ১ টিও দিতে পারেন
+                const scrollAmount = (itemWidth + gap) * 2; 
+
+                // স্ক্রল করার মেথড
+                scrollContainer.scrollBy({
+                    left: direction * scrollAmount,
+                    behavior: 'smooth'
+                });
+            }
+        }
+    }
+</script>
 {% endblock %}
