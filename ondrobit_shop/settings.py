@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-^rn^ca*52fjj&8v9-8e9=*hfixa88izshxkq4m9_d)*+(d9px_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['shop.ondrobit.com', 'www.shop.ondrobit.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -172,3 +172,5 @@ EMAIL_USE_TLS = True
 
 EMAIL_HOST_USER = 'nahidularaf@gmail.com'
 EMAIL_HOST_PASSWORD = 'rnufdnoxdqesehdl'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
