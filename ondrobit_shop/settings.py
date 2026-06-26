@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-^rn^ca*52fjj&8v9-8e9=*hfixa88izshxkq4m9_d)*+(d9px_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['shop.ondrobit.com', 'www.shop.ondrobit.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -52,6 +52,7 @@ SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -59,7 +60,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "allauth.account.middleware.AccountMiddleware",
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 # গুগল লগিন এবং allauth এর জন্য এটি আনকমেন্ট করা হয়েছে
