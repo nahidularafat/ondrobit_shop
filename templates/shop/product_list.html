@@ -22,6 +22,8 @@
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         transition: transform 0.3s ease;
         height: 100%;
+        display: flex;
+        flex-direction: column;
     }
     .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
     .product-img-container {
@@ -34,17 +36,21 @@
         border-radius: 8px 8px 0 0;
     }
     .product-img { max-width: 100%; max-height: 100%; object-fit: cover; }
+    
+    /* Price Styling */
+    .price-wrapper { margin-bottom: 15px; }
+    .product-price { font-weight: bold; color: #0d6efd; font-size: 1.1rem; }
+    .old-price { text-decoration: line-through; color: #6c757d; margin-left: 8px; font-size: 0.9rem; }
+    .discount-inline-badge { background-color: #dc3545; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; margin-left: 8px; font-weight: bold; }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="row g-4">
-    <!-- Sidebar Filters -->
     <div class="col-md-3">
         <div class="filter-card p-4">
             <h5 class="filter-title mb-4"><i class="fas fa-filter me-2"></i> Filter Products</h5>
             
-            <!-- Categories -->
             <h6 class="fw-bold mb-3">Categories</h6>
             <ul class="list-unstyled mb-4">
                 <li class="mb-2">
@@ -63,7 +69,6 @@
 
             <hr>
 
-            <!-- Price & Rating Filter Form -->
             <form method="GET">
                 <div class="mb-3">
                     <label class="small fw-bold">Price Range</label>
@@ -88,7 +93,6 @@
         </div>
     </div>
 
-    <!-- Product Grid -->
     <div class="col-md-9">
         <h3 class="fw-bold mb-4">{% if category %}{{ category.name }}{% else %}All Products{% endif %}</h3>
         
@@ -106,12 +110,21 @@
                         </div>
                     </a>
                     
-                    <div class="card-body text-center">
+                    <div class="card-body d-flex flex-column text-center">
                         <h6 class="fw-bold text-truncate">{{ product.name }}</h6>
-                        <p class="text-primary fw-bold">৳ {{ product.price }}</p>
                         
+                        <div class="mt-auto">
+                            <div class="price-wrapper">
+                                <span class="product-price">৳ {{ product.discounted_price }}</span>
+                                {% if product.discount_percentage > 0 %}
+                                    <span class="old-price">৳ {{ product.price }}</span>
+                                    <span class="discount-inline-badge">-{{ product.discount_percentage }}%</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                            
                         {% if product.stock > 0 %}
-                            <form action="{% url 'cart_add' product.id %}" method="post">
+                            <form action="{% url 'cart_add' product.id %}" method="post" class="add-to-cart-form">
                                 {% csrf_token %}
                                 <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill w-100">Add to Cart</button>
                             </form>

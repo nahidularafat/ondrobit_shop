@@ -569,9 +569,9 @@
                             {% if product.stock > 0 %}
                                 <form action="{% url 'cart_add' product.id %}" method="post">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn-cart">
+                                    <!-- <button type="submit" class="btn-cart">
                                         <i class="fas fa-cart-plus"></i> Add to Cart
-                                    </button>
+                                    </button> -->
                                 </form>
                             {% else %}
                                 <button class="btn-cart-disabled" disabled>Out of Stock</button>
@@ -644,9 +644,9 @@
                             {% if product.stock > 0 %}
                                 <form action="{% url 'cart_add' product.id %}" method="post">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn-cart">
+                                    <!-- <button type="submit" class="btn-cart">
                                         <i class="fas fa-cart-plus"></i> Add to Cart
-                                    </button>
+                                    </button> -->
                                 </form>
                             {% else %}
                                 <button class="btn-cart-disabled" disabled>Out of Stock</button>

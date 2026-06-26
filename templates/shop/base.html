@@ -5,11 +5,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Ondrobit Shop{% endblock %}</title>
     
-    <!-- Bootstrap 5 & FontAwesome -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+
+
+
+/* Professional Navbar Links */
+.navbar-nav {
+    gap: 6px;
+}
+
+.navbar-nav .nav-link {
+    color: #475569 !important;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 9px 16px !important;
+    border-radius: 10px;
+    transition: all .25s ease;
+    position: relative;
+}
+
+.navbar-nav .nav-link:hover {
+    background: #eff6ff;
+    color: #2563eb !important;
+}
+
+.navbar-nav .nav-link.active {
+    background: #2563eb;
+    color: #fff !important;
+    box-shadow: 0 8px 20px rgba(37,99,235,.18);
+}
+        .footer {
+            background: var(--primary-color);
+            color: #fff;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        .footer p {
+            margin-bottom: .35rem;
+        }
+
+        .footer small {
+            font-size: .85rem;
+            color: rgba(255,255,255,.65);
+        }
+
+        .footer small a {
+            color: rgba(255,255,255,.8);
+            text-decoration: none;
+            transition: color .2s ease;
+        }
+
+        .footer small a:hover {
+            color: #fff;
+        }
         :root {
             --primary-color: #0f172a;
             --secondary-color: #3b82f6;
@@ -17,7 +69,6 @@
         }
         body { font-family: 'Segoe UI', sans-serif; background: #f8fafc; }
         
-        /* Navbar Customization */
         .navbar-brand { font-weight: 800; color: var(--primary-color) !important; }
         .cart-icon-wrapper { position: relative; color: var(--primary-color); }
         .cart-badge {
@@ -27,20 +78,17 @@
         }
         .nav-link { color: var(--primary-color) !important; font-weight: 600; }
         
-        /* Footer */
         .footer { background: var(--primary-color); color: #fff; padding: 2rem 0; margin-top: 3rem; }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-<!-- Navbar -->
+
 <nav class="navbar navbar-expand-lg sticky-top bg-white" style="border-bottom: 1px solid rgba(0,0,0,0.08);">
     <div class="container d-flex align-items-center flex-wrap py-0">
 
-        <!-- Top row -->
         <div class="d-flex align-items-center w-100 py-2">
 
-            <!-- Brand -->
             <a class="navbar-brand d-flex align-items-center gap-2 mb-0 me-auto" href="{% url 'home' %}" style="font-size:15px;font-weight:600;white-space:nowrap;">
                 <span class="d-flex align-items-center justify-content-center rounded-2 bg-primary text-white flex-shrink-0" style="width:32px;height:32px;">
                     <i class="fas fa-shopping-bag" style="font-size:13px;"></i>
@@ -48,26 +96,35 @@
                 Ondrobit Shop
             </a>
 
-            <!-- Desktop nav links -->
-            <ul class="navbar-nav d-none d-lg-flex flex-row align-items-center gap-1 me-auto">
-                <li class="nav-item">
-                    <a class="nav-link px-3 py-2 rounded-2" href="{% url 'home' %}" style="font-size:14px;color:#555;">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link px-3 py-2 rounded-2" href="{% url 'product_list' %}" style="font-size:14px;color:#555;">All Products</a>
-                </li>
-                <!-- <li class="nav-item">
-                    <a class="nav-link px-3 py-2 rounded-2" href="#" style="font-size:14px;color:#555;">Best Selling</a>
-                </li> -->
-                <li class="nav-item">
-                    <a class="nav-link px-3 py-2 rounded-2" href="#" style="font-size:14px;color:#555;">About Us</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link px-3 py-2 rounded-2" href="#" style="font-size:14px;color:#555;">Contact Us</a>
-                </li>
-            </ul>
+            <ul class="navbar-nav d-none d-lg-flex flex-row align-items-center me-auto">
 
-            <!-- Desktop Search -->
+    <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}"
+           href="{% url 'home' %}">
+            <i class="fas fa-house me-1"></i>
+            Home
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.url_name == 'product_list' %}active{% endif %}"
+           href="{% url 'product_list' %}">
+            <i class="fas fa-box-open me-1"></i>
+            Products
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link"
+           href="https://ondrobit.com/contact/"
+           target="_blank">
+            <i class="fas fa-envelope me-1"></i>
+            Contact
+        </a>
+    </li>
+
+</ul>
+
             <form class="d-none d-lg-flex align-items-center gap-2 me-3 px-3 rounded-2"
                   action="{% url 'product_list' %}" method="GET"
                   style="background:#f5f5f5;border:1px solid rgba(0,0,0,0.09);height:38px;width:220px;">
@@ -76,7 +133,6 @@
                        placeholder="Search products..." style="font-size:13.5px;outline:none;color:#333;" />
             </form>
 
-            <!-- Desktop Right Actions -->
             <div class="d-none d-lg-flex align-items-center gap-2">
                 <a href="{% url 'cart_detail' %}" class="position-relative d-flex align-items-center justify-content-center rounded-2 text-secondary text-decoration-none"
                    style="width:38px;height:38px;" title="Cart">
@@ -125,7 +181,6 @@
                 {% endif %}
             </div>
 
-            <!-- Mobile: cart + hamburger -->
             <div class="d-flex d-lg-none align-items-center gap-1">
                 <a href="{% url 'cart_detail' %}" class="position-relative d-flex align-items-center justify-content-center rounded-2 text-secondary text-decoration-none"
                    style="width:40px;height:40px;" aria-label="Cart">
@@ -144,7 +199,6 @@
             </div>
         </div>
 
-        <!-- Mobile always-visible search bar -->
         <div class="w-100 pb-2 d-lg-none">
             <form class="d-flex align-items-center gap-2 px-3 rounded-2"
                   action="{% url 'product_list' %}" method="GET"
@@ -161,13 +215,11 @@
 
     </div>
 
-    <!-- Mobile collapse drawer — outside flex container -->
     <div class="collapse d-lg-none" id="navbarMobile"
          style="border-top:1px solid rgba(0,0,0,0.07);background:white;">
         <div class="container py-2">
 
             {% if user.is_authenticated %}
-                <!-- User info -->
                 <div class="d-flex align-items-center gap-3 px-2 py-2 mb-2 rounded-2" style="background:#f9f9f9;">
                     <span class="d-flex align-items-center justify-content-center rounded-circle bg-primary text-white flex-shrink-0"
                           style="width:38px;height:38px;font-size:13px;font-weight:700;">
@@ -188,13 +240,7 @@
             <a href="{% url 'product_list' %}" class="d-flex align-items-center gap-3 px-2 py-2 rounded-2 text-decoration-none text-dark mb-1" style="font-size:14px;">
                 <i class="fas fa-th-large text-muted" style="width:18px;text-align:center;font-size:14px;"></i> All Products
             </a>
-            <!-- <a href="#" class="d-flex align-items-center gap-3 px-2 py-2 rounded-2 text-decoration-none text-dark mb-1" style="font-size:14px;">
-                <i class="fas fa-fire text-muted" style="width:18px;text-align:center;font-size:14px;"></i> Best Selling Products
-            </a> -->
-            <a href="#" class="d-flex align-items-center gap-3 px-2 py-2 rounded-2 text-decoration-none text-dark mb-1" style="font-size:14px;">
-                <i class="fas fa-info-circle text-muted" style="width:18px;text-align:center;font-size:14px;"></i> About Us
-            </a>
-            <a href="#" class="d-flex align-items-center gap-3 px-2 py-2 rounded-2 text-decoration-none text-dark mb-2" style="font-size:14px;">
+            <a href="https://ondrobit.com/contact/" target="_blank" rel="noopener noreferrer" class="d-flex align-items-center gap-3 px-2 py-2 rounded-2 text-decoration-none text-dark mb-2" style="font-size:14px;">
                 <i class="fas fa-envelope text-muted" style="width:18px;text-align:center;font-size:14px;"></i> Contact Us
             </a>
 
@@ -220,18 +266,26 @@
     </div>
 </nav>
 
-    <!-- Content -->
     <main class="container my-4">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
-    <footer class="footer text-center">
-        <div class="container">
-            <p>&copy; {% now "Y" %} Ondrobit Shop. All rights reserved.</p>
-        </div>
-    </footer>
+<footer class="footer text-center">
+    <div class="container">
+        <p class="mb-1">
+            &copy; {% now "Y" %} Ondrobit Shop. All rights reserved.
+        </p>
 
+        <small>
+            Designed, Developed &amp; Maintained by
+            <a href="https://ondrobit.com/"
+               target="_blank"
+               rel="noopener noreferrer">
+                Ondrobit
+            </a>
+        </small>
+    </div>
+</footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
