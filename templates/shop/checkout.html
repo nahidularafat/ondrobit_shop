@@ -284,23 +284,32 @@
                 </div>
                 <div class="checkout-body">
                     <div class="payment-method-container">
-                        <span class="secure-badge"><i class="fas fa-shield-alt me-1"></i> Secure Connection</span>
+                        <span class="secure-badge"><i class="fas fa-shield-alt me-1"></i> Secure</span>
                         
                         {% for radio in form.payment_method %}
-                            <div class="form-check my-3 p-2 rounded hover-bg-light border-bottom border-opacity-10 pb-3">
-                                <div class="d-flex align-items-center">
-                                    <span style="transform: scale(1.25); display: inline-block;" class="me-2">
+                            <div class="form-check my-3 p-3 rounded hover-bg-light border mb-3 shadow-sm transition-all">
+                                <div class="d-flex align-items-start">
+                                    <span style="transform: scale(1.25); margin-top: 0.3rem;" class="me-3">
                                         {{ radio.tag }}
                                     </span>
-                                    <label class="form-check-label ms-2 w-100" for="{{ radio.id_for_label }}">
+                                    <label class="form-check-label w-100" for="{{ radio.id_for_label }}" style="cursor: pointer;">
                                         <span class="fw-bold fs-5 text-dark d-block mb-1">{{ radio.choice_label }}</span>
                                         
+                                        <!-- SSLCommerz Design -->
                                         {% if radio.choice_value == 'sslcommerz' %}
-                                            <span class="text-muted small d-block">Pay securely using Mobile Banking (bKash, Nagad), Credit/Debit Card, or Net Banking.</span>
-                                            <div class="mt-2 bg-white p-2 rounded text-center d-inline-block border">
+                                            <span class="text-muted small d-block mb-2">Pay securely using Mobile Banking (bKash, Nagad), Credit/Debit Card, or Net Banking.</span>
+                                            <div class="bg-white p-2 rounded text-center d-inline-block border">
                                                 <img src="https://securepay.sslcommerz.com/public/image/SSLCommerz-Pay-With-logo-All-Size-01.png" alt="SSLCommerz Gateway" height="30">
                                             </div>
+                                            
+                                        <!-- Cash on Delivery Design -->
+                                        {% elif radio.choice_value == 'COD' %}
+                                            <span class="text-muted small d-block mb-2">Pay with cash upon delivery of your products.</span>
+                                            <div class="bg-white p-2 rounded text-center d-inline-block border text-success fw-bold">
+                                                <i class="fas fa-money-bill-wave fa-lg me-1"></i> Cash on Delivery
+                                            </div>
                                         {% endif %}
+                                        
                                     </label>
                                 </div>
                             </div>

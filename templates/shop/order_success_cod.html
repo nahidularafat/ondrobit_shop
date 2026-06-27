@@ -1,0 +1,79 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Order Confirmed | Ondrobit E-Shop{% endblock %}
+
+{% block extra_css %}
+<style>
+    .cod-card {
+        border: none;
+        border-radius: var(--border-radius);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        padding: 3rem 2rem;
+        margin-top: 2rem;
+        margin-bottom: 4rem;
+        background: white;
+    }
+    .success-icon-wrapper {
+        width: 100px;
+        height: 100px;
+        background-color: rgba(37, 99, 235, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem auto;
+    }
+    .success-icon {
+        font-size: 3.5rem;
+        color: var(--primary-color);
+    }
+    .order-details-box {
+        background-color: var(--bg-light);
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin: 2rem 0;
+        border: 1px dashed #ced4da;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6 text-center">
+        <div class="cod-card border-top border-primary border-4">
+            <div class="success-icon-wrapper">
+                <i class="fas fa-box-open success-icon"></i>
+            </div>
+            <h2 class="fw-bold text-dark mb-3">Order Placed Successfully!</h2>
+            <h5 class="text-primary fw-bold mb-4">Our team will contact you soon for confirmation.</h5>
+            
+            <p class="text-muted mb-0">Thank you for choosing Cash on Delivery.</p>
+            <p class="text-muted">Please keep the exact amount ready during delivery.</p>
+            
+            <div class="order-details-box text-start">
+                <div class="row mb-2">
+                    <div class="col-6 text-muted">Order Number:</div>
+                    <div class="col-6 fw-bold text-end">#{{ order.id }}</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-6 text-muted">Payment Method:</div>
+                    <div class="col-6 fw-bold text-end">Cash on Delivery</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-6 text-muted">Amount to Pay:</div>
+                    <div class="col-6 fw-bold text-primary text-end">৳{{ order.get_total_cost }}</div>
+                </div>
+            </div>
+            
+            <div class="d-grid gap-3 d-sm-flex justify-content-sm-center mt-4">
+                <a href="{% url 'profile' %}?tab=orders" class="btn btn-primary rounded-pill px-4 py-2 fw-bold shadow-sm">
+                    <i class="fas fa-clipboard-list me-2"></i> View Order
+                </a>
+                <a href="{% url 'product_list' %}" class="btn btn-outline-secondary rounded-pill px-4 py-2 fw-bold">
+                    <i class="fas fa-shopping-bag me-2"></i> Continue Shopping
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

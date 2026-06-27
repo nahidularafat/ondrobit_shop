@@ -223,7 +223,6 @@ def cart_remove(request, product_id):
     messages.success(request, f"{product.name} has been removed from your cart.")
     return redirect('cart_detail')
 
-
 # --- Checkout & Payment Views ---
 @csrf_exempt
 @login_required
@@ -272,7 +271,9 @@ def checkout(request):
                 
                 send_order_confirmation_email(order)
                 messages.success(request, 'Order placed successfully with Cash on Delivery!')
-                return render(request, 'shop/payment_success.html', {'order': order})
+                
+                # এখানে COD এর জন্য আলাদা পেজে রিডাইরেক্ট করা হলো
+                return render(request, 'shop/order_success_cod.html', {'order': order})
             else:
                 # অনলাইন পেমেন্ট (SSLCOMMERZ)
                 response_data = generate_sslcommerz_payment(request, order)
@@ -280,7 +281,7 @@ def checkout(request):
                     return redirect(response_data.get('GatewayPageURL'))
                 else:
                     messages.error(request, "Payment gateway redirection failed. Created as COD.")
-                    return render(request, 'shop/payment_success.html', {'order': order})
+                    return render(request, 'shop/order_success_cod.html', {'order': order})
     else:
         form = CheckoutForm(initial={
             'first_name': request.user.first_name,
