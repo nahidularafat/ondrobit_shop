@@ -159,10 +159,10 @@ LOGOUT_REDIRECT_URL = '/'
 
 
 # SSL Commerz setup
-SSLCOMMERZ_STORE_ID = 'ondro6a3686fb7c432'
-SSLCOMMERZ_STORE_PASSWORD = 'ondro6a3686fb7c432@ssl'
-SSLCOMMERZ_PAYMENT_URL = 'https://sandbox.sslcommerz.com/gwprocess/v4/api.php'
-SSLCOMMERZ_VALIDATION_URL = 'https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php'
+SSLCOMMERZ_STORE_ID = ''
+SSLCOMMERZ_STORE_PASSWORD = ''
+SSLCOMMERZ_PAYMENT_URL = ''
+SSLCOMMERZ_VALIDATION_URL = ''
 
 
 # Email setup
@@ -171,7 +171,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = 'nahidularaf@gmail.com'
-EMAIL_HOST_PASSWORD = 'rnufdnoxdqesehdl'
+EMAIL_HOST_USER = '@gmail.com'
+EMAIL_HOST_PASSWORD = ''
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
