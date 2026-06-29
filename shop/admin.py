@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib import admin
 from . import models 
-
+from .models import category, Product, cart, CartItem, Order, Rating, OrderItem, ShippingZone
 admin.site.site_header = "My Shop Admin"
 admin.site.site_title = "Shop Dashboard"
 admin.site.index_title = "Welcome to Shop Panel"
@@ -58,3 +58,9 @@ class RatingAdmin(admin.ModelAdmin):
     list_display = ['product', 'user', 'rating', 'comment', 'created']
     list_filter = ['rating', 'created']
     search_fields = ['product__name', 'user__username', 'comment']
+    
+@admin.register(ShippingZone)
+class ShippingZoneAdmin(admin.ModelAdmin):
+    list_display = ['name', 'charge']
+    list_editable = ['charge'] # লিস্ট থেকেই সরাসরি প্রাইস চেঞ্জ করা যাবে    
+    

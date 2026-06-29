@@ -84,7 +84,16 @@ class CartItem(models.Model):
     def get_cost(self):
         return self.product.discounted_price * self.quantity
     
-          
+      
+# নতুন মডেল: অ্যাডমিন এখান থেকে ডেলিভারি এরিয়া এবং চার্জ অ্যাড করবে
+class ShippingZone(models.Model):
+    name = models.CharField(max_length=100)  # যেমন: Inside Dhaka
+    charge = models.DecimalField(max_digits=10, decimal_places=2) # যেমন: 80.00
+
+    def __str__(self):
+        return f"{self.name} (৳{self.charge})"
+
+
 class Order(models.Model):
     STATUS_CHOICES = (
         ('Pending', 'Pending'),
@@ -113,12 +122,20 @@ class Order(models.Model):
     transaction_id = models.CharField(max_length=100, blank=True, null=True)    
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-
+    shipping_zone_name = models.CharField(max_length=100, blank=True, null=True)
+    shipping_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    
+    
     def __str__(self):
         return f'Order {self.id} by {self.user.username}' 
 
     class Meta:
-        ordering = ['-created']           
+        ordering = ['-created']   
+        
+    def get_total_cost(self):
+           
+            total_items_cost = sum(item.get_cost() for item in self.items.all())
+            return total_items_cost + self.shipping_cost                
 
     def get_total_cost(self):
         return sum(item.get_cost() for item in self.items.all())

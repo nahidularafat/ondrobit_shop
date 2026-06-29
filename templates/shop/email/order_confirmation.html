@@ -8,7 +8,6 @@
 <body style="font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f8f9fa; margin: 0; padding: 20px 0;">
     
     <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-        <!-- Header -->
         <div style="background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); padding: 30px 20px; text-align: center; color: white;">
             <h1 style="margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 1px;">Ondrobit E-Shop</h1>
             <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">Order Confirmation</p>
@@ -18,17 +17,33 @@
             <h2 style="color: #333; margin-top: 0;">Hi {{ order.first_name }},</h2>
             <p style="color: #555;">Thank you for your purchase! We've received your order and are getting it ready for shipment. Here are your order details:</p>
             
-            <!-- Order Info Box -->
             <div style="background-color: #f8f9fa; border-radius: 8px; padding: 20px; margin: 25px 0; border: 1px solid #e9ecef;">
                 <p style="margin: 0 0 10px 0;"><strong>Order Number:</strong> #{{ order.id }}</p>
                 <p style="margin: 0 0 10px 0;"><strong>Order Date:</strong> {{ order.created_at|date:"F d, Y H:i" }}</p>
-                <p style="margin: 0 0 10px 0;"><strong>Payment Status:</strong> <span style="color: #1cc88a; font-weight: bold;">Paid</span></p>
+                
+                <p style="margin: 0 0 10px 0;"><strong>Payment Method:</strong> 
+                    {% if order.payment_method == 'COD' %}
+                        Cash on Delivery
+                    {% else %}
+                        Online Payment (SSLCommerz)
+                    {% endif %}
+                </p>
+                
+                <p style="margin: 0 0 10px 0;"><strong>Order Status:</strong> 
+                    {% if order.status|default:'Pending' == 'Pending' %}
+                        <span style="color: #ff9800; font-weight: bold;">{{ order.status|default:'Pending' }}</span>
+                    {% else %}
+                        <span style="color: #1cc88a; font-weight: bold;">{{ order.status|default:'Pending' }}</span>
+                    {% endif %}
+                </p>
+                
+                {% if order.transaction_id %}
                 <p style="margin: 0;"><strong>Transaction ID:</strong> {{ order.transaction_id }}</p>
+                {% endif %}
             </div>
             
             <h3 style="color: #6a11cb; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">Order Summary</h3>
             
-            <!-- Items Table -->
             <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
                 <thead>
                     <tr>
@@ -38,7 +53,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Note: models.py e related_name 'items' ache tai order.items.all() hobe -->
                     {% for item in order.items.all %}
                     <tr>
                         <td style="padding: 12px 10px; border-bottom: 1px solid #e9ecef;">{{ item.product.name }}</td>
@@ -52,14 +66,23 @@
                         <td colspan="2" style="padding: 15px 10px; text-align: right; font-weight: bold; border-bottom: 1px solid #e9ecef;">Subtotal:</td>
                         <td style="padding: 15px 10px; text-align: right; font-weight: bold; border-bottom: 1px solid #e9ecef;">৳{{ order.get_total_cost }}</td>
                     </tr>
+                    
+                    {% if order.shipping_cost %}
+                    <tr>
+                        <td colspan="2" style="padding: 15px 10px; text-align: right; font-weight: bold; border-bottom: 1px solid #e9ecef;">Shipping ({{ order.shipping_zone_name }}):</td>
+                        <td style="padding: 15px 10px; text-align: right; font-weight: bold; border-bottom: 1px solid #e9ecef;">৳{{ order.shipping_cost }}</td>
+                    </tr>
+                    {% endif %}
+                    
                     <tr>
                         <td colspan="2" style="padding: 15px 10px; text-align: right; font-weight: bold;">Total Amount:</td>
-                        <td style="padding: 15px 10px; text-align: right; font-weight: bold; color: #6a11cb; font-size: 18px;">৳{{ order.get_total_cost }}</td>
+                        <td style="padding: 15px 10px; text-align: right; font-weight: bold; color: #6a11cb; font-size: 18px;">
+                            ৳{% if order.shipping_cost %}{{ order.get_total_cost|add:order.shipping_cost }}{% else %}{{ order.get_total_cost }}{% endif %}
+                        </td>
                     </tr>
                 </tfoot>
             </table>
             
-            <!-- Shipping Info -->
             <h3 style="color: #6a11cb; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin-top: 30px;">Shipping Details</h3>
             <div style="color: #555;">
                 <p style="margin: 0 0 5px 0;"><strong>{{ order.first_name }} {{ order.last_name }}</strong></p>
@@ -71,7 +94,6 @@
             <p style="color: #555; margin-top: 30px;">We'll notify you as soon as your order ships. If you have any questions, feel free to reply to this email.</p>
         </div>
         
-        <!-- Footer -->
         <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #e9ecef;">
             <p style="margin: 0; color: #888; font-size: 12px;">© {% now "Y" %} Ondrobit E-Shop. All rights reserved.</p>
             <p style="margin: 5px 0 0 0; color: #888; font-size: 12px;">This email was automatically sent to {{ order.email }}.</p>

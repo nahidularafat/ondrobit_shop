@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q, Min, Max, Avg
-
+from .models import ShippingZone
 
 
 from django.shortcuts import render
@@ -222,26 +222,45 @@ def cart_remove(request, product_id):
     cart_item.delete()
     messages.success(request, f"{product.name} has been removed from your cart.")
     return redirect('cart_detail')
-
 # --- Checkout & Payment Views ---
 @csrf_exempt
 @login_required
 def checkout(request):
     cart_obj, created = cart.objects.get_or_create(user=request.user)
+    
     if not cart_obj.items.exists():
         messages.warning(request, "Your cart is empty!")
         return redirect('product_list')
+    
+    shipping_zones = ShippingZone.objects.all()
         
     if request.method == 'POST':
         form = CheckoutForm(request.POST)
         if form.is_valid():
             order = form.save(commit=False)
             order.user = request.user
+            
+            # শিপিং জোন সেট করা
+            zone_id = request.POST.get('shipping_zone')
+            if zone_id:
+                selected_zone = ShippingZone.objects.get(id=zone_id)
+                order.shipping_zone_name = selected_zone.name
+                order.shipping_cost = selected_zone.charge            
+            
+            # ফর্ম থেকে পেমেন্ট মেথড নিয়ে অর্ডারে সেট করা
+            payment_method = form.cleaned_data.get('payment_method')
+            order.payment_method = payment_method
+            
+            # যদি Cash on Delivery হয়, তাহলে সেভ করার আগেই স্ট্যাটাস Pending করা
+            if payment_method == 'COD':
+                order.status = 'Pending'
+                order.paid = False
+                
+            # অর্ডার সেভ করা
             order.save()
             
             # কার্টের আইটেমগুলো অর্ডার আইটেম হিসেবে সেভ করা
             for item in cart_obj.items.all():
-                # আপনার মডেলে থাকা discounted_price প্রপার্টি ব্যবহার করা হচ্ছে
                 item_price = item.product.discounted_price
                 
                 OrderItem.objects.create(
@@ -254,12 +273,8 @@ def checkout(request):
             # কার্ট খালি করা
             cart_obj.items.all().delete()
             
-            # পেমেন্ট মেথড চেক করা
-            if getattr(order, 'payment_method', 'COD') == 'COD':
-                order.status = 'Pending'
-                order.paid = False
-                order.save()
-                
+            # পেমেন্ট মেথড চেক করে পরবর্তী কাজ করা
+            if payment_method == 'COD':
                 # স্টক কমানো
                 for item in order.items.all():
                     product = item.product
@@ -269,11 +284,13 @@ def checkout(request):
                         product.stock = 0
                     product.save()
                 
+                # মেইল পাঠানো (মেইলে order.status 'Pending' যাবে)
                 send_order_confirmation_email(order)
                 messages.success(request, 'Order placed successfully with Cash on Delivery!')
                 
-                # এখানে COD এর জন্য আলাদা পেজে রিডাইরেক্ট করা হলো
+                # COD এর জন্য আলাদা পেজে রিডাইরেক্ট করা হলো
                 return render(request, 'shop/order_success_cod.html', {'order': order})
+                
             else:
                 # অনলাইন পেমেন্ট (SSLCOMMERZ)
                 response_data = generate_sslcommerz_payment(request, order)
@@ -281,16 +298,21 @@ def checkout(request):
                     return redirect(response_data.get('GatewayPageURL'))
                 else:
                     messages.error(request, "Payment gateway redirection failed. Created as COD.")
+                    # ফেইল হলে ফলব্যাক হিসেবে COD সাকসেস পেজে পাঠানো
                     return render(request, 'shop/order_success_cod.html', {'order': order})
     else:
+        # GET রিকোয়েস্টের জন্য ডিফল্ট ফর্ম ডেটা
         form = CheckoutForm(initial={
             'first_name': request.user.first_name,
             'last_name': request.user.last_name,
             'email': request.user.email,
         })
         
-    return render(request, 'shop/checkout.html', {'form': form, 'cart': cart_obj})
-
+    return render(request, 'shop/checkout.html', {
+        'form': form, 
+        'cart': cart_obj,
+        'shipping_zones': shipping_zones
+    })
 
 @csrf_exempt
 @login_required
