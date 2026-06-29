@@ -501,7 +501,7 @@
     @media (min-width: 768px) { .horizontal-scroll .scroll-item { flex: 0 0 calc(25% - 0.75rem); } }
     @media (min-width: 992px) { .horizontal-scroll .scroll-item { flex: 0 0 calc(20% - 0.8rem); } }
 
-    /* ── ফ্ল্যাশ সেল ব্যানার ── */
+    /* ── ফ্ল্যাশ সেল ব্যানার (বাংলা টেক্সট সহ) ── */
     .sale-banner {
         background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
         border-radius: var(--radius);
@@ -893,18 +893,18 @@
         </div>
     </div>
 
-    <!-- ── FLASH SALE BANNER ── -->
+    <!-- ── FLASH SALE BANNER (বাংলা টেক্সট) ── -->
     <div class="sale-banner mb-3">
         <div>
-            <div class="sale-tag"><i class="fas fa-bolt me-1"></i> Limited offer</div>
-            <h3>Up to 40% off on selected items</h3>
-            <p>Deals refresh weekly — don't miss out.</p>
+            <div class="sale-tag"><i class="fas fa-bolt me-1"></i> সীমিত অফার</div>
+            <h3>নির্বাচিত পণ্যে ৪০% পর্যন্ত ছাড়!</h3>
+            <p>সাপ্তাহিক নতুন অফার — মিস করবেন না।</p>
         </div>
-        <a href="{% url 'product_list' %}" class="btn-hero-primary flex-shrink-0"><i class="fas fa-tags"></i> Shop deals</a>
+        <a href="{% url 'product_list' %}" class="btn-hero-primary flex-shrink-0"><i class="fas fa-tags"></i> অফার দেখুন</a>
     </div>
 
     <!-- ── NEWSLETTER ── -->
-    <div class="newsletter">
+    <!-- <div class="newsletter">
         <div class="newsletter-icon"><i class="fas fa-envelope"></i></div>
         <h3>Stay in the loop</h3>
         <p>New arrivals and deals, straight to your inbox.</p>
@@ -913,7 +913,7 @@
             <button type="submit" class="btn-subscribe">Subscribe</button>
         </form>
         <p class="text-muted">No spam. Unsubscribe anytime.</p>
-    </div>
+    </div> -->
 
 </div>
 
