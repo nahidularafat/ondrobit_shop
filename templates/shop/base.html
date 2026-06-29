@@ -4,288 +4,540 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Ondrobit Shop{% endblock %}</title>
-    
+
+    <!-- Bootstrap 5 & Font Awesome -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
+    <!-- Google Font (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet">
+
     <style>
-
-
-
-/* Professional Navbar Links */
-.navbar-nav {
-    gap: 6px;
-}
-
-.navbar-nav .nav-link {
-    color: #475569 !important;
-    font-size: 14px;
-    font-weight: 600;
-    padding: 9px 16px !important;
-    border-radius: 10px;
-    transition: all .25s ease;
-    position: relative;
-}
-
-.navbar-nav .nav-link:hover {
-    background: #eff6ff;
-    color: #2563eb !important;
-}
-
-.navbar-nav .nav-link.active {
-    background: #2563eb;
-    color: #fff !important;
-    box-shadow: 0 8px 20px rgba(37,99,235,.18);
-}
-        .footer {
-            background: var(--primary-color);
-            color: #fff;
-            padding: 2rem 0;
-            margin-top: 3rem;
-        }
-
-        .footer p {
-            margin-bottom: .35rem;
-        }
-
-        .footer small {
-            font-size: .85rem;
-            color: rgba(255,255,255,.65);
-        }
-
-        .footer small a {
-            color: rgba(255,255,255,.8);
-            text-decoration: none;
-            transition: color .2s ease;
-        }
-
-        .footer small a:hover {
-            color: #fff;
-        }
+        /* ── রুট ভেরিয়েবল (প্রফেশনাল কালার স্কিম) ── */
         :root {
-            --primary-color: #0f172a;
-            --secondary-color: #3b82f6;
-            --danger-color: #ef4444;
+            --primary: #4f46e5;        /* Indigo 600 */
+            --primary-dark: #4338ca;   /* Indigo 700 */
+            --primary-light: #eef2ff;  /* Indigo 50 */
+            --secondary: #f59e0b;
+            --gray: #64748b;
+            --text: #0f172a;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.07);
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.1);
+            --radius: 12px;
+            --radius-sm: 8px;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        body { font-family: 'Segoe UI', sans-serif; background: #f8fafc; }
-        
-        .navbar-brand { font-weight: 800; color: var(--primary-color) !important; }
-        .cart-icon-wrapper { position: relative; color: var(--primary-color); }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary);
+            transition: var(--transition);
+        }
+        a:hover {
+            color: var(--primary-dark);
+        }
+
+        /* ── নেভবার (স্টিকি, প্রফেশনাল) ── */
+        .navbar {
+            background: var(--surface) !important;
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            padding: 0.5rem 0;
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: var(--text) !important;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .navbar-brand .brand-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--primary);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        /* নেভ লিংক (ডেস্কটপ) */
+        .navbar-nav .nav-link {
+            color: var(--gray) !important;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.6rem 1.2rem !important;
+            border-radius: 50px;
+            transition: var(--transition);
+            position: relative;
+        }
+        .navbar-nav .nav-link:hover {
+            background: var(--primary-light);
+            color: var(--primary) !important;
+        }
+        .navbar-nav .nav-link.active {
+            background: var(--primary);
+            color: #fff !important;
+            box-shadow: 0 4px 14px rgba(79,70,229,0.25);
+        }
+
+        /* সার্চ বার (ডেস্কটপ) */
+        .search-wrapper {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 0 1rem;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+            width: 220px;
+        }
+        .search-wrapper:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(79,70,229,0.08);
+            background: #fff;
+        }
+        .search-wrapper .search-icon {
+            color: var(--gray);
+            font-size: 0.85rem;
+            margin-right: 0.6rem;
+        }
+        .search-wrapper input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 0.85rem;
+            padding: 0.4rem 0;
+        }
+        .search-wrapper input::placeholder {
+            color: #94a3b8;
+        }
+
+        /* কার্ট আইকন ও ব্যাজ */
+        .cart-link {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: var(--gray);
+            transition: var(--transition);
+            background: transparent;
+        }
+        .cart-link:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
         .cart-badge {
-            position: absolute; top: -8px; right: -8px;
-            background: var(--danger-color); color: white;
-            font-size: 0.7rem; border-radius: 50%; padding: 2px 6px;
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: #dc2626;
+            color: #fff;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--surface);
         }
-        .nav-link { color: var(--primary-color) !important; font-weight: 600; }
-        
-        .footer { background: var(--primary-color); color: #fff; padding: 2rem 0; margin-top: 3rem; }
+
+        /* ইউজার ড্রপডাউন */
+        .user-dropdown .dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.4rem 0.8rem 0.4rem 0.4rem;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: var(--text);
+            transition: var(--transition);
+        }
+        .user-dropdown .dropdown-toggle:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+        .user-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
+        .user-dropdown .dropdown-menu {
+            border: none;
+            box-shadow: var(--shadow-lg);
+            border-radius: var(--radius-sm);
+            padding: 0.4rem 0;
+            min-width: 180px;
+            margin-top: 0.4rem;
+        }
+        .user-dropdown .dropdown-item {
+            padding: 0.5rem 1.2rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+        }
+        .user-dropdown .dropdown-item:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        .user-dropdown .dropdown-item.text-danger:hover {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        /* লগইন / রেজিস্টার বাটন */
+        .btn-outline-login {
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 0.4rem 1.2rem;
+            border-radius: 50px;
+            transition: var(--transition);
+        }
+        .btn-outline-login:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .btn-primary-register {
+            background: var(--primary);
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 0.4rem 1.2rem;
+            border-radius: 50px;
+            border: none;
+            transition: var(--transition);
+        }
+        .btn-primary-register:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(79,70,229,0.25);
+        }
+
+        /* মোবাইল নেভ */
+        .mobile-nav {
+            border-top: 1px solid var(--border);
+            background: var(--surface);
+            padding: 0.8rem 0;
+        }
+        .mobile-nav .nav-item a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 0.6rem 0.8rem;
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+        .mobile-nav .nav-item a:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        .mobile-nav .nav-item a i {
+            width: 20px;
+            text-align: center;
+            color: var(--gray);
+        }
+
+        /* ── ফুটার ── */
+        .footer {
+            background: var(--text);
+            color: rgba(255,255,255,0.8);
+            padding: 2.5rem 0 1.8rem;
+            margin-top: 3rem;
+            border-top: 4px solid var(--primary);
+        }
+        .footer a {
+            color: rgba(255,255,255,0.7);
+            transition: var(--transition);
+        }
+        .footer a:hover {
+            color: #fff;
+        }
+        .footer .footer-brand {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+        .footer .footer-brand i {
+            color: var(--secondary);
+        }
+        .footer .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.6);
+            transition: var(--transition);
+            margin-right: 6px;
+        }
+        .footer .social-links a:hover {
+            background: var(--primary);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        /* ── রেসপনসিভ ── */
+        @media (max-width: 992px) {
+            .navbar-brand .brand-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 0.85rem;
+            }
+            .search-wrapper {
+                width: 100%;
+            }
+            .user-dropdown .dropdown-toggle {
+                padding: 0.2rem 0.6rem 0.2rem 0.2rem;
+            }
+        }
+        @media (max-width: 576px) {
+            .navbar-brand {
+                font-size: 1rem;
+            }
+            .cart-link {
+                width: 36px;
+                height: 36px;
+            }
+            .cart-badge {
+                width: 16px;
+                height: 16px;
+                font-size: 0.55rem;
+            }
+            .btn-outline-login,
+            .btn-primary-register {
+                font-size: 0.75rem;
+                padding: 0.3rem 0.8rem;
+            }
+        }
     </style>
+
     {% block extra_css %}{% endblock %}
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg sticky-top bg-white" style="border-bottom: 1px solid rgba(0,0,0,0.08);">
-    <div class="container d-flex align-items-center flex-wrap py-0">
+    <!-- ═══════════ নেভবার ═══════════ -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container d-flex flex-wrap align-items-center">
 
-        <div class="d-flex align-items-center w-100 py-2">
+            <!-- ব্র্যান্ড ও টগল বাটন -->
+            <div class="d-flex align-items-center w-100 py-1">
 
-            <a class="navbar-brand d-flex align-items-center gap-2 mb-0 me-auto" href="{% url 'home' %}" style="font-size:15px;font-weight:600;white-space:nowrap;">
-                <span class="d-flex align-items-center justify-content-center rounded-2 bg-primary text-white flex-shrink-0" style="width:32px;height:32px;">
-                    <i class="fas fa-shopping-bag" style="font-size:13px;"></i>
-                </span>
-                Ondrobit Shop
-            </a>
-
-            <ul class="navbar-nav d-none d-lg-flex flex-row align-items-center me-auto">
-
-    <li class="nav-item">
-        <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}"
-           href="{% url 'home' %}">
-            <i class="fas fa-house me-1"></i>
-            Home
-        </a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link {% if request.resolver_match.url_name == 'product_list' %}active{% endif %}"
-           href="{% url 'product_list' %}">
-            <i class="fas fa-box-open me-1"></i>
-            Products
-        </a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link"
-           href="https://ondrobit.com/contact/"
-           target="_blank">
-            <i class="fas fa-envelope me-1"></i>
-            Contact
-        </a>
-    </li>
-
-</ul>
-
-            <form class="d-none d-lg-flex align-items-center gap-2 me-3 px-3 rounded-2"
-                  action="{% url 'product_list' %}" method="GET"
-                  style="background:#f5f5f5;border:1px solid rgba(0,0,0,0.09);height:38px;width:220px;">
-                <i class="fas fa-search text-muted" style="font-size:13px;"></i>
-                <input class="border-0 bg-transparent p-0 w-100" type="search" name="search"
-                       placeholder="Search products..." style="font-size:13.5px;outline:none;color:#333;" />
-            </form>
-
-            <div class="d-none d-lg-flex align-items-center gap-2">
-                <a href="{% url 'cart_detail' %}" class="position-relative d-flex align-items-center justify-content-center rounded-2 text-secondary text-decoration-none"
-                   style="width:38px;height:38px;" title="Cart">
-                    <i class="fas fa-shopping-cart" style="font-size:17px;"></i>
-                    {% if cart_items_count > 0 %}
-                        <span class="position-absolute bg-danger text-white rounded-circle d-flex align-items-center justify-content-center"
-                              style="width:17px;height:17px;font-size:9px;top:3px;right:3px;border:2px solid white;font-weight:600;">
-                            {{ cart_items_count }}
-                        </span>
-                    {% endif %}
+                <a class="navbar-brand me-auto" href="{% url 'home' %}">
+                    <span class="brand-icon"><i class="fas fa-shopping-bag"></i></span>
+                    Ondrobit Shop
                 </a>
 
-                <div style="width:1px;height:22px;background:rgba(0,0,0,0.1);margin:0 4px;"></div>
+                <!-- ডেস্কটপ নেভ লিংক -->
+                <ul class="navbar-nav d-none d-lg-flex flex-row me-auto ms-3">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">
+                            <i class="fas fa-house me-1"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'product_list' %}active{% endif %}" href="{% url 'product_list' %}">
+                            <i class="fas fa-box-open me-1"></i> Products
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://ondrobit.com/contact/" target="_blank">
+                            <i class="fas fa-envelope me-1"></i> Contact
+                        </a>
+                    </li>
+                </ul>
 
-                {% if user.is_authenticated %}
-                    <div class="dropdown">
-                        <button class="btn d-flex align-items-center gap-2 px-2 py-1 rounded-2"
-                                style="font-size:13.5px;font-weight:500;border:1px solid rgba(0,0,0,0.12);background:white;"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                            <span class="d-flex align-items-center justify-content-center rounded-circle bg-primary text-white flex-shrink-0"
-                                  style="width:28px;height:28px;font-size:11px;font-weight:700;">
-                                {{ user.username|slice:":2"|upper }}
-                            </span>
-                            {{ user.username }}
-                            <i class="fas fa-chevron-down ms-1" style="font-size:10px;opacity:0.45;"></i>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm py-1 mt-1" style="min-width:175px;border-radius:10px;">
-                            <li>
-                                <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{% url 'profile' %}" style="font-size:13.5px;">
-                                    <i class="fas fa-user fa-sm text-muted" style="width:14px;text-align:center;"></i> My Profile
-                                </a>
-                            </li>
-                            <li><hr class="dropdown-divider my-1"></li>
-                            <li>
-                                <a class="dropdown-item d-flex align-items-center gap-2 py-2 text-danger" href="{% url 'logout' %}" style="font-size:13.5px;">
-                                    <i class="fas fa-sign-out-alt fa-sm" style="width:14px;text-align:center;"></i> Logout
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                {% else %}
-                    <a href="{% url 'login' %}" class="btn btn-sm border rounded-2 px-3"
-                       style="font-size:13.5px;font-weight:500;color:#333;border-color:rgba(0,0,0,0.14)!important;">Login</a>
-                    <a href="{% url 'register' %}" class="btn btn-sm btn-primary rounded-2 px-3"
-                       style="font-size:13.5px;font-weight:500;">Register</a>
-                {% endif %}
+                <!-- ডেস্কটপ সার্চ -->
+                <form class="d-none d-lg-flex search-wrapper me-3" action="{% url 'product_list' %}" method="GET">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="search" name="search" placeholder="Search products..." aria-label="Search">
+                </form>
+
+                <!-- ডেস্কটপ ইউজার / কার্ট -->
+                <div class="d-none d-lg-flex align-items-center gap-2">
+
+                    <a href="{% url 'cart_detail' %}" class="cart-link" title="Cart">
+                        <i class="fas fa-shopping-cart" style="font-size:1.1rem;"></i>
+                        {% if cart_items_count > 0 %}
+                            <span class="cart-badge">{{ cart_items_count }}</span>
+                        {% endif %}
+                    </a>
+
+                    <div style="width:1px; height:28px; background:var(--border);"></div>
+
+                    {% if user.is_authenticated %}
+                        <div class="dropdown user-dropdown">
+                            <button class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="user-avatar">{{ user.username|slice:":2"|upper }}</span>
+                                <span>{{ user.username }}</span>
+                                <i class="fas fa-chevron-down ms-1" style="font-size:0.6rem; opacity:0.5;"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{% url 'profile' %}"><i class="fas fa-user"></i> My Profile</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-outline-login">Login</a>
+                        <a href="{% url 'register' %}" class="btn btn-primary-register">Register</a>
+                    {% endif %}
+                </div>
+
+                <!-- মোবাইল: কার্ট + টগল -->
+                <div class="d-flex d-lg-none align-items-center gap-1">
+                    <a href="{% url 'cart_detail' %}" class="cart-link" title="Cart">
+                        <i class="fas fa-shopping-cart" style="font-size:1.1rem;"></i>
+                        {% if cart_items_count > 0 %}
+                            <span class="cart-badge">{{ cart_items_count }}</span>
+                        {% endif %}
+                    </a>
+                    <button class="navbar-toggler border-0 shadow-none p-2" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#mobileMenu"
+                            aria-controls="mobileMenu" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
             </div>
 
-            <div class="d-flex d-lg-none align-items-center gap-1">
-                <a href="{% url 'cart_detail' %}" class="position-relative d-flex align-items-center justify-content-center rounded-2 text-secondary text-decoration-none"
-                   style="width:40px;height:40px;" aria-label="Cart">
-                    <i class="fas fa-shopping-cart" style="font-size:18px;"></i>
-                    {% if cart_items_count > 0 %}
-                        <span class="position-absolute bg-danger text-white rounded-circle d-flex align-items-center justify-content-center"
-                              style="width:17px;height:17px;font-size:9px;top:4px;right:4px;border:2px solid white;font-weight:600;">
-                            {{ cart_items_count }}
-                        </span>
-                    {% endif %}
-                </a>
-                <button class="navbar-toggler border-0 shadow-none p-2" type="button"
-                        data-bs-toggle="collapse" data-bs-target="#navbarMobile" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+            <!-- মোবাইল সার্চ (নেভের নিচে) -->
+            <div class="w-100 d-lg-none py-2">
+                <form class="search-wrapper w-100" action="{% url 'product_list' %}" method="GET">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="search" name="search" placeholder="Search products..." aria-label="Search">
+                </form>
             </div>
-        </div>
 
-        <div class="w-100 pb-2 d-lg-none">
-            <form class="d-flex align-items-center gap-2 px-3 rounded-2"
-                  action="{% url 'product_list' %}" method="GET"
-                  style="background:#f5f5f5;border:1px solid rgba(0,0,0,0.09);height:42px;">
-                <i class="fas fa-search text-muted" style="font-size:13px;flex-shrink:0;"></i>
-                <input class="border-0 bg-transparent p-0 flex-grow-1" type="search" name="search"
-                       placeholder="Search products..." style="font-size:14px;outline:none;" />
-                <button type="submit" class="btn btn-primary btn-sm rounded-2 px-3"
-                        style="font-size:13px;height:30px;white-space:nowrap;flex-shrink:0;">
-                    Search
-                </button>
-            </form>
-        </div>
-
-    </div>
-
-    <div class="collapse d-lg-none" id="navbarMobile"
-         style="border-top:1px solid rgba(0,0,0,0.07);background:white;">
-        <div class="container py-2">
-
-            {% if user.is_authenticated %}
-                <div class="d-flex align-items-center gap-3 px-2 py-2 mb-2 rounded-2" style="background:#f9f9f9;">
-                    <span class="d-flex align-items-center justify-content-center rounded-circle bg-primary text-white flex-shrink-0"
-                          style="width:38px;height:38px;font-size:13px;font-weight:700;">
-                        {{ user.username|slice:":2"|upper }}
-                    </span>
-                    <div>
-                        <div style="font-size:14px;font-weight:600;">{{ user.username }}</div>
-                        <div class="text-muted" style="font-size:12px;">My Account</div>
+            <!-- মোবাইল মেনু (কলাপসিবল) -->
+            <div class="collapse w-100 d-lg-none" id="mobileMenu">
+                <div class="mobile-nav">
+                    <div class="nav-item">
+                        <a href="{% url 'home' %}"><i class="fas fa-house"></i> Home</a>
                     </div>
+                    <div class="nav-item">
+                        <a href="{% url 'product_list' %}"><i class="fas fa-box-open"></i> All Products</a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="https://ondrobit.com/contact/" target="_blank"><i class="fas fa-envelope"></i> Contact Us</a>
+                    </div>
+
+                    {% if user.is_authenticated %}
+                        <hr style="opacity:0.08; margin:0.8rem 0;">
+                        <div class="nav-item">
+                            <a href="{% url 'profile' %}"><i class="fas fa-user"></i> My Profile</a>
+                        </div>
+                        <div class="nav-item">
+                            <a href="{% url 'logout' %}" class="text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    {% else %}
+                        <hr style="opacity:0.08; margin:0.8rem 0;">
+                        <div class="d-flex gap-2 mt-1">
+                            <a href="{% url 'login' %}" class="btn btn-outline-login flex-fill text-center">Login</a>
+                            <a href="{% url 'register' %}" class="btn btn-primary-register flex-fill text-center">Register</a>
+                        </div>
+                    {% endif %}
                 </div>
-            {% endif %}
-
-            <p class="text-muted px-2 mb-1" style="font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;">Browse</p>
-
-            <a href="{% url 'home' %}" class="d-flex align-items-center gap-3 px-2 py-2 rounded-2 text-decoration-none text-dark mb-1" style="font-size:14px;">
-                <i class="fas fa-home text-muted" style="width:18px;text-align:center;font-size:15px;"></i> Home
-            </a>
-            <a href="{% url 'product_list' %}" class="d-flex align-items-center gap-3 px-2 py-2 rounded-2 text-decoration-none text-dark mb-1" style="font-size:14px;">
-                <i class="fas fa-th-large text-muted" style="width:18px;text-align:center;font-size:14px;"></i> All Products
-            </a>
-            <a href="https://ondrobit.com/contact/" target="_blank" rel="noopener noreferrer" class="d-flex align-items-center gap-3 px-2 py-2 rounded-2 text-decoration-none text-dark mb-2" style="font-size:14px;">
-                <i class="fas fa-envelope text-muted" style="width:18px;text-align:center;font-size:14px;"></i> Contact Us
-            </a>
-
-            {% if user.is_authenticated %}
-                <hr style="opacity:0.1;">
-                <p class="text-muted px-2 mb-1" style="font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;">Account</p>
-                <a href="{% url 'profile' %}" class="d-flex align-items-center gap-3 px-2 py-2 rounded-2 text-decoration-none text-dark mb-1" style="font-size:14px;">
-                    <i class="fas fa-user text-muted" style="width:18px;text-align:center;font-size:14px;"></i> My Profile
-                </a>
-                <a href="{% url 'logout' %}" class="d-flex align-items-center gap-3 px-2 py-2 rounded-2 text-decoration-none text-danger mb-1" style="font-size:14px;">
-                    <i class="fas fa-sign-out-alt" style="width:18px;text-align:center;font-size:14px;"></i> Logout
-                </a>
-            {% else %}
-                <div class="d-flex gap-2 mt-2 pb-1">
-                    <a href="{% url 'login' %}" class="btn flex-fill border rounded-2"
-                       style="font-size:14px;font-weight:500;border-color:rgba(0,0,0,0.14)!important;color:#333;">Login</a>
-                    <a href="{% url 'register' %}" class="btn btn-primary flex-fill rounded-2"
-                       style="font-size:14px;font-weight:500;">Register</a>
-                </div>
-            {% endif %}
+            </div>
 
         </div>
-    </div>
-</nav>
+    </nav>
 
+    <!-- ═══════════ মেইন কন্টেন্ট ═══════════ -->
     <main class="container my-4">
         {% block content %}{% endblock %}
     </main>
 
-<footer class="footer text-center">
-    <div class="container">
-        <p class="mb-1">
-            &copy; {% now "Y" %} Ondrobit Shop. All rights reserved.
-        </p>
+    <!-- ═══════════ ফুটার ═══════════ -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-4 text-center text-md-start mb-3 mb-md-0">
+                    <div class="footer-brand">
+                        <i class="fas fa-shopping-bag me-2"></i> Ondrobit Shop
+                    </div>
+                    <p style="font-size:0.85rem; opacity:0.7; max-width:280px; margin:0 auto 0 0;">
+                        Premium products, fast delivery across Bangladesh.
+                    </p>
+                </div>
+                <div class="col-md-4 text-center mb-3 mb-md-0">
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    </div>
+                    <p style="font-size:0.75rem; opacity:0.5; margin-top:0.5rem;">
+                        &copy; {% now "Y" %} Ondrobit Shop. All rights reserved.
+                    </p>
+                </div>
+                <div class="col-md-4 text-center text-md-end">
+                    <small style="opacity:0.6; font-size:0.8rem;">
+                        Designed, Developed &amp; Maintained by
+                        <a href="https://ondrobit.com/" target="_blank" rel="noopener noreferrer" style="color:rgba(255,255,255,0.8); font-weight:600;">
+                            Ondrobit
+                        </a>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </footer>
 
-        <small>
-            Designed, Developed &amp; Maintained by
-            <a href="https://ondrobit.com/"
-               target="_blank"
-               rel="noopener noreferrer">
-                Ondrobit
-            </a>
-        </small>
-    </div>
-</footer>
+    <!-- স্ক্রিপ্টস -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+
 </body>
 </html>

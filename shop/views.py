@@ -5,7 +5,8 @@ from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q, Min, Max, Avg
 from .models import ShippingZone
-
+from django.shortcuts import get_object_or_404, redirect
+from .models import Product, cart, CartItem
 
 from django.shortcuts import render
 
@@ -377,3 +378,21 @@ def profile(request):
         'total_spent': total_spent,
         'order_history_active': order_history_active
     })
+    
+@login_required
+def buy_now(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    cart_obj, created = cart.objects.get_or_create(user=request.user)
+    
+    # কোয়ান্টিটি ফর্ম থেকে নিলে সেটি রিসিভ করুন, না হলে ডিফল্ট 1
+    quantity = int(request.POST.get('quantity', 1))
+    
+    cart_item, item_created = CartItem.objects.get_or_create(cart=cart_obj, product=product)
+    if not item_created:
+        cart_item.quantity += quantity
+    else:
+        cart_item.quantity = quantity
+    cart_item.save()
+    
+    # সরাসরি চেকআউট পেজে রিডাইরেক্ট
+    return redirect('checkout')    

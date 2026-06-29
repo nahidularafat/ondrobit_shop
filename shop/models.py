@@ -151,3 +151,21 @@ class OrderItem(models.Model):
 
     def get_cost(self):
         return self.price * self.quantity
+    
+    
+# ১. একাধিক ছবি রাখার জন্য মডেল
+class ProductImage(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='products/gallery/')
+
+    def __str__(self):
+        return f"Image for {self.product.name}"
+    
+# ২. ডাইনামিক স্পেসিফিকেশন রাখার জন্য মডেল
+class ProductSpecification(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='specifications')
+    key = models.CharField(max_length=100, help_text="e.g., Brand, Model, Bluetooth")
+    value = models.CharField(max_length=255, help_text="e.g., QCY, T13 ANC, Version 5.1")
+    
+    def __str__(self):
+        return f"{self.product.name} - {self.key}: {self.value}"    
