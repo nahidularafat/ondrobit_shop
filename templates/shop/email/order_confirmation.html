@@ -1,104 +1,359 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Confirmation - #{{ order.id }}</title>
+    <style>
+        /* ── রিসেট ও বেস ── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f1f5f9;
+            margin: 0;
+            padding: 30px 0;
+            color: #0f172a;
+        }
+        .container {
+            max-width: 620px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+            border: 1px solid #e9edf3;
+        }
+
+        /* ── হেডার ── */
+        .header {
+            background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+            padding: 36px 30px 28px;
+            text-align: center;
+            color: #fff;
+            position: relative;
+        }
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+        }
+        .header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin: 0 0 4px 0;
+        }
+        .header h1 i {
+            font-style: normal;
+            color: #fbbf24;
+        }
+        .header .tagline {
+            font-size: 14px;
+            opacity: 0.85;
+            margin: 4px 0 0 0;
+            font-weight: 500;
+        }
+        .header .order-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(4px);
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* ── বডি ── */
+        .body {
+            padding: 30px 28px 34px;
+        }
+        .greeting {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+        .greeting-sub {
+            color: #64748b;
+            font-size: 15px;
+            margin-bottom: 24px;
+        }
+
+        /* ── ইনফো বক্স ── */
+        .info-box {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 18px 22px;
+            margin: 20px 0 28px;
+            border: 1px solid #e2e8f0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 20px;
+        }
+        .info-box .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .info-box .info-item .label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+        .info-box .info-item .value {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 15px;
+        }
+        .info-box .info-item .value .status-badge {
+            display: inline-block;
+            background: #f59e0b;
+            color: #fff;
+            padding: 0 12px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .info-box .info-item .value .status-badge.completed {
+            background: #22c55e;
+        }
+
+        /* ── টেবিল ── */
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+            border-bottom: 2px solid #eef2ff;
+            padding-bottom: 8px;
+            margin: 28px 0 16px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-title i {
+            color: #4f46e5;
+        }
+
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        .order-table th {
+            text-align: left;
+            padding: 12px 10px 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .order-table td {
+            padding: 12px 10px 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+            color: #0f172a;
+        }
+        .order-table tr:last-child td {
+            border-bottom: none;
+        }
+        .order-table .text-center {
+            text-align: center;
+        }
+        .order-table .text-right {
+            text-align: right;
+        }
+        .order-table .total-row td {
+            font-weight: 700;
+            padding-top: 16px;
+            border-top: 2px solid #e2e8f0;
+            font-size: 16px;
+        }
+        .order-table .grand-total td {
+            font-size: 20px;
+            color: #4f46e5;
+            border-top: 2px dashed #cbd5e1;
+            padding-top: 18px;
+            padding-bottom: 6px;
+        }
+
+        /* ── শিপিং ডিটেইল ── */
+        .shipping-address {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 16px 20px;
+            margin: 16px 0 24px;
+            border: 1px solid #e2e8f0;
+        }
+        .shipping-address p {
+            margin: 2px 0;
+            color: #0f172a;
+        }
+        .shipping-address .name {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        /* ── ফুটার ── */
+        .footer {
+            background: #f8fafc;
+            padding: 20px 28px;
+            text-align: center;
+            border-top: 1px solid #e9edf3;
+        }
+        .footer p {
+            margin: 4px 0;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+        .footer a {
+            color: #4f46e5;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ── রেসপনসিভ ── */
+        @media (max-width: 480px) {
+            .container { border-radius: 0; }
+            .header { padding: 28px 16px; }
+            .body { padding: 20px 16px; }
+            .info-box { grid-template-columns: 1fr; gap: 4px; }
+            .order-table { font-size: 13px; }
+        }
+    </style>
 </head>
-<body style="font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f8f9fa; margin: 0; padding: 20px 0;">
-    
-    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-        <div style="background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); padding: 30px 20px; text-align: center; color: white;">
-            <h1 style="margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 1px;">Ondrobit E-Shop</h1>
-            <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">Order Confirmation</p>
+<body>
+    <div class="container">
+
+        <!-- ── হেডার ── -->
+        <div class="header">
+            <h1>Ondrobit <i>Shop</i></h1>
+            <div class="tagline">Premium Shopping Experience</div>
+            <div class="order-badge">🎉 Order Confirmed</div>
         </div>
-        
-        <div style="padding: 30px;">
-            <h2 style="color: #333; margin-top: 0;">Hi {{ order.first_name }},</h2>
-            <p style="color: #555;">Thank you for your purchase! We've received your order and are getting it ready for shipment. Here are your order details:</p>
-            
-            <div style="background-color: #f8f9fa; border-radius: 8px; padding: 20px; margin: 25px 0; border: 1px solid #e9ecef;">
-                <p style="margin: 0 0 10px 0;"><strong>Order Number:</strong> #{{ order.id }}</p>
-                <p style="margin: 0 0 10px 0;"><strong>Order Date:</strong> {{ order.created_at|date:"F d, Y H:i" }}</p>
-                
-                <p style="margin: 0 0 10px 0;"><strong>Payment Method:</strong> 
-                    {% if order.payment_method == 'COD' %}
-                        Cash on Delivery
-                    {% else %}
-                        Online Payment (SSLCommerz)
-                    {% endif %}
-                </p>
-                
-                <p style="margin: 0 0 10px 0;"><strong>Order Status:</strong> 
-                    {% if order.status|default:'Pending' == 'Pending' %}
-                        <span style="color: #ff9800; font-weight: bold;">{{ order.status|default:'Pending' }}</span>
-                    {% else %}
-                        <span style="color: #1cc88a; font-weight: bold;">{{ order.status|default:'Pending' }}</span>
-                    {% endif %}
-                </p>
-                
+
+        <!-- ── বডি ── -->
+        <div class="body">
+
+            <div class="greeting">Hi {{ order.first_name }},</div>
+            <div class="greeting-sub">
+                Thank you for shopping with us! We've received your order and are preparing it for shipment.
+                Here are your order details:
+            </div>
+
+            <!-- অর্ডার ইনফো -->
+            <div class="info-box">
+                <div class="info-item">
+                    <span class="label">Order Number</span>
+                    <span class="value">#{{ order.id }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Order Date</span>
+                    <span class="value">{{ order.created_at|date:"F d, Y H:i" }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Payment Method</span>
+                    <span class="value">
+                        {% if order.payment_method == 'COD' %}
+                            💵 Cash on Delivery
+                        {% else %}
+                            💳 Online Payment (SSLCommerz)
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Order Status</span>
+                    <span class="value">
+                        <span class="status-badge {% if order.status == 'Completed' or order.status == 'Shipped' %}completed{% endif %}">
+                            {{ order.status|default:'Pending' }}
+                        </span>
+                    </span>
+                </div>
                 {% if order.transaction_id %}
-                <p style="margin: 0;"><strong>Transaction ID:</strong> {{ order.transaction_id }}</p>
+                <div class="info-item" style="grid-column: 1 / -1;">
+                    <span class="label">Transaction ID</span>
+                    <span class="value">{{ order.transaction_id }}</span>
+                </div>
                 {% endif %}
             </div>
-            
-            <h3 style="color: #6a11cb; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">Order Summary</h3>
-            
-            <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+
+            <!-- অর্ডার সামারি -->
+            <div class="section-title"><i>📦</i> Order Summary</div>
+
+            <table class="order-table">
                 <thead>
                     <tr>
-                        <th style="padding: 12px 10px; text-align: left; background-color: #f8f9fa; border-bottom: 2px solid #dee2e6; color: #555;">Product</th>
-                        <th style="padding: 12px 10px; text-align: center; background-color: #f8f9fa; border-bottom: 2px solid #dee2e6; color: #555;">Qty</th>
-                        <th style="padding: 12px 10px; text-align: right; background-color: #f8f9fa; border-bottom: 2px solid #dee2e6; color: #555;">Total</th>
+                        <th>Product</th>
+                        <th class="text-center">Qty</th>
+                        <th class="text-right">Total</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for item in order.items.all %}
                     <tr>
-                        <td style="padding: 12px 10px; border-bottom: 1px solid #e9ecef;">{{ item.product.name }}</td>
-                        <td style="padding: 12px 10px; border-bottom: 1px solid #e9ecef; text-align: center;">{{ item.quantity }}</td>
-                        <td style="padding: 12px 10px; border-bottom: 1px solid #e9ecef; text-align: right;">৳{{ item.get_cost }}</td>
+                        <td>{{ item.product.name }}</td>
+                        <td class="text-center">{{ item.quantity }}</td>
+                        <td class="text-right">৳{{ item.get_cost }}</td>
                     </tr>
                     {% endfor %}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="2" style="padding: 15px 10px; text-align: right; font-weight: bold; border-bottom: 1px solid #e9ecef;">Subtotal:</td>
-                        <td style="padding: 15px 10px; text-align: right; font-weight: bold; border-bottom: 1px solid #e9ecef;">৳{{ order.get_total_cost }}</td>
+                    <tr class="total-row">
+                        <td colspan="2" class="text-right">Subtotal</td>
+                        <td class="text-right">৳{{ order.get_total_cost }}</td>
                     </tr>
-                    
                     {% if order.shipping_cost %}
                     <tr>
-                        <td colspan="2" style="padding: 15px 10px; text-align: right; font-weight: bold; border-bottom: 1px solid #e9ecef;">Shipping ({{ order.shipping_zone_name }}):</td>
-                        <td style="padding: 15px 10px; text-align: right; font-weight: bold; border-bottom: 1px solid #e9ecef;">৳{{ order.shipping_cost }}</td>
+                        <td colspan="2" class="text-right">Shipping ({{ order.shipping_zone_name }})</td>
+                        <td class="text-right">৳{{ order.shipping_cost }}</td>
                     </tr>
                     {% endif %}
-                    
-                    <tr>
-                        <td colspan="2" style="padding: 15px 10px; text-align: right; font-weight: bold;">Total Amount:</td>
-                        <td style="padding: 15px 10px; text-align: right; font-weight: bold; color: #6a11cb; font-size: 18px;">
+                    <tr class="grand-total">
+                        <td colspan="2" class="text-right">Total Amount</td>
+                        <td class="text-right">
                             ৳{% if order.shipping_cost %}{{ order.get_total_cost|add:order.shipping_cost }}{% else %}{{ order.get_total_cost }}{% endif %}
                         </td>
                     </tr>
-                </tfoot>
+                </tbody>
             </table>
-            
-            <h3 style="color: #6a11cb; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin-top: 30px;">Shipping Details</h3>
-            <div style="color: #555;">
-                <p style="margin: 0 0 5px 0;"><strong>{{ order.first_name }} {{ order.last_name }}</strong></p>
-                <p style="margin: 0 0 5px 0;">{{ order.address }}</p>
-                <p style="margin: 0 0 5px 0;">{{ order.city }}, {{ order.postal_code }}</p>
-                <p style="margin: 0;">Bangladesh</p>
+
+            <!-- শিপিং ঠিকানা -->
+            <div class="section-title"><i>🚚</i> Shipping Details</div>
+            <div class="shipping-address">
+                <p class="name">{{ order.first_name }} {{ order.last_name }}</p>
+                <p>{{ order.address }}</p>
+                <p>{{ order.city }}, {{ order.postal_code }}</p>
+                <p>Bangladesh</p>
             </div>
-            
-            <p style="color: #555; margin-top: 30px;">We'll notify you as soon as your order ships. If you have any questions, feel free to reply to this email.</p>
+
+            <p style="color: #64748b; margin-top: 22px; font-size: 15px;">
+                We'll notify you as soon as your order ships. If you have any questions, simply reply to this email — we're here to help!
+            </p>
+
         </div>
-        
-        <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #e9ecef;">
-            <p style="margin: 0; color: #888; font-size: 12px;">© {% now "Y" %} Ondrobit E-Shop. All rights reserved.</p>
-            <p style="margin: 5px 0 0 0; color: #888; font-size: 12px;">This email was automatically sent to {{ order.email }}.</p>
+
+        <!-- ── ফুটার ── -->
+        <div class="footer">
+            <p>&copy; {% now "Y" %} Ondrobit Shop. All rights reserved.</p>
+            <p>This email was automatically sent to <a href="mailto:{{ order.email }}">{{ order.email }}</a>.</p>
+            <p style="margin-top: 6px; font-size: 11px; opacity: 0.6;">
+                Need help? <a href="https://ondrobit.com/contact/" target="_blank">Contact Support</a>
+            </p>
         </div>
+
     </div>
-    
 </body>
 </html>
