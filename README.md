@@ -1,10 +1,4 @@
-<img width="934" height="926" alt="Screenshot 2026-07-01 183659" src="https://github.com/user-attachments/assets/74df15f0-3260-4b0b-a07a-89bd5bd2a21c" />
-<img width="1244" height="782" alt="Screenshot 2026-07-01 183918" src="https://github.com/user-attachments/assets/56548d41-7234-49e1-99be-3ae5b244ea29" />
-<img width="911" height="906" alt="Screenshot 2026-07-01 183821" src="https://github.com/user-attachments/assets/5fa8662c-118e-4c37-8244-081f7e920b5a" />
-<img width="777" height="925" alt="Screenshot 2026-07-01 183806" src="https://github.com/user-attachments/assets/8c3616c6-49dc-444a-9890-ca41df9ae433" />
-<img width="939" height="577" alt="Screenshot 2026-07-01 183749" src="https://github.com/user-attachments/assets/7fd07f71-7da4-4304-a60e-d892f7d7519c" />
-<img width="940" height="900" alt="Screenshot 2026-07-01 183730" src="https://github.com/user-attachments/assets/fdbf8217-8cbf-417d-bb0b-1facc2b03da3" />
-<img width="936" height="934" alt="Screenshot 2026-07-01 183709" src="https://github.com/user-attachments/assets/4bc7f434-afea-4ebd-b9de-1203df147d3e" />
+
 # Ondrobit E-Shop 🛒
 
 A fully functional, scalable, and responsive e-commerce platform built with Django. Ondrobit E-Shop offers a seamless shopping experience for users with dynamic product management, intuitive UI, and secure order processing.
@@ -77,3 +71,13 @@ Nahidul Arafat for Ondrobit_Shop
 Solely designed, architected, and developed this e-commerce solution to drive the technical vision of Ondrobit.
 
 If you have any questions or suggestions, feel free to open an issue or submit a pull request!
+
+
+
+<img width="934" height="926" alt="Screenshot 2026-07-01 183659" src="https://github.com/user-attachments/assets/74df15f0-3260-4b0b-a07a-89bd5bd2a21c" />
+<img width="1244" height="782" alt="Screenshot 2026-07-01 183918" src="https://github.com/user-attachments/assets/56548d41-7234-49e1-99be-3ae5b244ea29" />
+<img width="911" height="906" alt="Screenshot 2026-07-01 183821" src="https://github.com/user-attachments/assets/5fa8662c-118e-4c37-8244-081f7e920b5a" />
+<img width="777" height="925" alt="Screenshot 2026-07-01 183806" src="https://github.com/user-attachments/assets/8c3616c6-49dc-444a-9890-ca41df9ae433" />
+<img width="939" height="577" alt="Screenshot 2026-07-01 183749" src="https://github.com/user-attachments/assets/7fd07f71-7da4-4304-a60e-d892f7d7519c" />
+<img width="940" height="900" alt="Screenshot 2026-07-01 183730" src="https://github.com/user-attachments/assets/fdbf8217-8cbf-417d-bb0b-1facc2b03da3" />
+<img width="936" height="934" alt="Screenshot 2026-07-01 183709" src="https://github.com/user-attachments/assets/4bc7f434-afea-4ebd-b9de-1203df147d3e" />
